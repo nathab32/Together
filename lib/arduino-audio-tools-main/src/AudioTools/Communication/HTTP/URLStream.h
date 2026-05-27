@@ -359,7 +359,7 @@ class URLStream : public AbstractURLStream {
         client_secure->setInsecure();
         client_secure->setTimeout(client_timeout);
 #ifdef ESP32
-        client_secure->setConnectionTimeout(client_timeout);
+        client_secure->setTimeout(client_timeout);
         client_secure->setHandshakeTimeout(handshake_timeout);
 #endif
 #ifdef RP2040_HOWER
@@ -373,7 +373,7 @@ class URLStream : public AbstractURLStream {
       client_insecure = new WiFiClient();
       client_insecure->setTimeout(client_timeout);
 #ifdef ESP32
-      client_insecure->setConnectionTimeout(client_timeout);
+      client_insecure->setTimeout(client_timeout);
 #endif
       LOGI("WiFiClient");
     }
