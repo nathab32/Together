@@ -4,10 +4,12 @@ Audio::Audio()
     : micVolume(nullptr), micCopier(nullptr), speakerVolume(nullptr), speakerCopier(nullptr), out_stream(nullptr)
 {
     info = AudioInfo(SAMPLE_RATE, 1, BIT_DEPTH);
-    
 }
 
 Audio::~Audio(){
+    if (micCopier) { delete micCopier; micCopier = nullptr; }
+    if (micVolume) { delete micVolume; micVolume = nullptr; }
+
     if (speakerCopier) { delete speakerCopier; speakerCopier = nullptr; }
     if (speakerVolume) { delete speakerVolume; speakerVolume = nullptr; }
     if (out_stream) { delete out_stream; out_stream = nullptr; }
@@ -22,14 +24,15 @@ bool Audio::beginMic(){
     
     auto config_mic = mic.defaultConfig(RX_MODE);
     config_mic.copyFrom(info);
-    config_mic.i2s_format = I2S_STD_FORMAT;
-    config_mic.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT;  // For mono I2S mic input, select the actual channel side
-    config_mic.bits_per_sample = 32;
+    // config_mic.i2s_format = I2S_STD_FORMAT;
+    // config_mic.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT;  // For mono I2S mic input, select the actual channel side
+    config_mic.signal_type = PDM;
+    // config_mic.bits_per_sample = 32;
     config_mic.port_no = 0;
-    config_mic.use_apll = true;
-    config_mic.pin_ws = INMP_WS;
-    config_mic.pin_bck = INMP_BCLK;
-    config_mic.pin_data = INMP_SD;
+    config_mic.use_apll = false;
+    config_mic.pin_ws = MIC_WS;
+    config_mic.pin_bck = -1;
+    config_mic.pin_data = MIC_DATA;
 
     if(!mic.begin(config_mic)) return false;
 
@@ -38,7 +41,18 @@ bool Audio::beginMic(){
         return false;
     }
 
-    if (!micCopier) micCopier = new StreamCopy(*out_stream, mic, BUFFER_SIZE);
+    if(!micVolume) {
+        micVolume = new VolumeStream(mic);
+        auto vcfg = micVolume->defaultConfig();
+        vcfg.copyFrom(info);
+        vcfg.allow_boost = true;
+        micVolume->begin(vcfg);
+
+        micVolume->setVolume(100);
+    }
+
+
+    if (!micCopier) micCopier = new StreamCopy(*out_stream, *micVolume, BUFFER_SIZE);
 
     return true;
 }

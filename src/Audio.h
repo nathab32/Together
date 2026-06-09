@@ -9,15 +9,15 @@
 #define MAX_LRC 33
 #define MAX_BCLK 25
 
-#define INMP_SD 23
-#define INMP_WS 22
-#define INMP_BCLK 21
+#define MIC_DATA 18
+#define MIC_WS 19
+// #define INMP_BCLK 21
 
-#define SAMPLE_RATE 8000
-#define BIT_DEPTH 32
+#define SAMPLE_RATE 16000
+#define BIT_DEPTH 16
 
 #define BUFFER_SIZE 1024
-static constexpr int AUDIO_BUFFER_COUNT = 100;
+static constexpr int AUDIO_BUFFER_COUNT = 250;
 
 
 class Audio
@@ -27,7 +27,7 @@ private:
     I2SStream mic;
     VolumeStream *micVolume;
     StreamCopy *micCopier;
-
+    
     I2SStream amp;
     VolumeStream *speakerVolume;
     StreamCopy *speakerCopier;
