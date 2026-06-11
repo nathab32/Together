@@ -48,7 +48,7 @@ bool Audio::beginMic(){
         vcfg.allow_boost = true;
         micVolume->begin(vcfg);
 
-        micVolume->setVolume(100);
+        micVolume->setVolume(200);
     }
 
 
@@ -79,7 +79,11 @@ bool Audio::beginAmp(){
     return speakerVolume->begin(vcfg);
 }
 
-bool Audio::beginEncoder(MqttClient &client){
-    if (!out_stream) out_stream = new EncodedAudioStream(&client, new WAVEncoder());
+bool Audio::beginEncoderStream(MqttClient &client){
+    out_stream = new EncodedAudioStream(&client, new WAVEncoder());
     return out_stream->begin(info);
+}
+
+bool Audio::beginEncoder(){
+    return out_stream->getEncoder()->begin();
 }

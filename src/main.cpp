@@ -67,6 +67,7 @@ void startRecording() {
   } else {
     Serial.println("Failed to start recording: beginMessage failed");
   }
+  audio.beginEncoder();
 }
 
 void stopRecording() {
@@ -118,7 +119,7 @@ void setup() {
 
   // initialize audio after Serial is ready
   audio.beginLogger();
-  if (!audio.beginEncoder(client)) Serial.println("beginEncoder failed");
+  if (!audio.beginEncoderStream(client)) Serial.println("beginEncoderStream failed");
   if (!audio.beginMic()) Serial.println("beginMic failed");
   // if (!audio.beginAmp()) Serial.println("beginAmp failed");
   // audio.setVolume(0.5);

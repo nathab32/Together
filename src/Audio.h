@@ -40,7 +40,8 @@ public:
     void beginLogger();
     bool beginMic();
     bool beginAmp();
-    bool beginEncoder(MqttClient &client);
+    bool beginEncoderStream(MqttClient &client);
+    bool beginEncoder();
 
     // void setMicVolume(double vol) {if (micVolume) micVolume->setVolume(vol); }
     size_t copyMic(int N) { return micCopier ? micCopier->copyN(N) : 0; }
