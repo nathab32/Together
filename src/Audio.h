@@ -43,7 +43,8 @@ public:
     bool beginEncoder(MqttClient &client);
 
     // void setMicVolume(double vol) {if (micVolume) micVolume->setVolume(vol); }
-    void copyMic(int N) { if (micCopier) micCopier->copyN(N); }
+    size_t copyMic(int N) { return micCopier ? micCopier->copyN(N) : 0; }
+    bool copyMic() { return micCopier ? (micCopier->copy() > 0) : false; }
 
     void setSpeakerVolume(double vol) {if (speakerVolume) speakerVolume->setVolume(vol); }
     void copySpeaker() { if (speakerCopier) speakerCopier->copy(); }

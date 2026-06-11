@@ -2,6 +2,8 @@
 #include "Credentials.h"
 #include "Audio.h"
 
+#include <OneButton.h>
+
 #include <WiFi.h>
 #include "ArduinoMqttClient.h"
 // #include <PubSubClient.h>
@@ -13,11 +15,13 @@ MqttClient client(espClient);
 // PINS
 
 Audio audio;
-// AudioInfo info(8000, 1, 16);
-// SineGenerator<int16_t> sine(440);
-// GeneratedSoundStream<int16_t> in(sine);
-// EncodedAudioStream out(&client, new WAVEncoder());
-// StreamCopy copier(out, in, BUFFER_SIZE);
+
+// OneButton L(0);
+// OneButton C(2);
+// OneButton R(4);
+
+bool recording = false;
+bool toggleRecordingRequested = false;
 
 void reconnect() {
   while(!client.connected()){
@@ -48,16 +52,54 @@ void reconnect() {
   }
 }
 
+void LPfunction(void *OneButton) {
+    Serial.println("L pressed");
+    toggleRecordingRequested = true;
+}
+
+void startRecording() {
+  if (!client.connected()) reconnect();
+  if (client.beginMessage("esp32/audio/control", false)) {
+    client.print("START");
+    client.endMessage();
+    recording = true;
+    Serial.println("Recording started");
+  } else {
+    Serial.println("Failed to start recording: beginMessage failed");
+  }
+}
+
+void stopRecording() {
+  if (!recording) return;
+  if (client.beginMessage("esp32/audio/control", false)) {
+    client.print("STOP");
+    client.endMessage();
+    Serial.println("Recording stopped and published");
+  } else {
+    Serial.println("Recording stop failed");
+  }
+  recording = false;
+}
+
+void sendAudio() {
+  client.beginMessage("esp32/audio/stream", BUFFER_SIZE, false);
+  audio.copyMic();
+  client.endMessage();
+}
+
+void LinterruptCallback() {
+  toggleRecordingRequested = true;
+}
+
 void setup() {
   delay(100);
   Serial.begin(115200);
   while(!Serial);
   Serial.println("Program Start");
 
-  // AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);
-  // sine.begin(info, 440);
-  // in.begin(info);
-  // out.begin(info);
+  // L.attachClick(LPfunction, &L);
+  pinMode(0, INPUT_PULLUP);
+  attachInterrupt(0, LinterruptCallback, FALLING);
 
   Serial.print("Connecting to: ");
   Serial.println(SSID);
@@ -85,26 +127,37 @@ void setup() {
     reconnect();
   }
 
-  client.beginMessage(MQTT_USER, BUFFER_SIZE * AUDIO_BUFFER_COUNT, true);
+  // client.beginMessage(MQTT_USER, BUFFER_SIZE * AUDIO_BUFFER_COUNT, true);
 
-  // copier.copyN(AUDIO_BUFFER_COUNT);
-  audio.copyMic(AUDIO_BUFFER_COUNT);
+  // // copier.copyN(AUDIO_BUFFER_COUNT);
+  // audio.copyMic(AUDIO_BUFFER_COUNT);
 
-  if(client.endMessage()){
-    Serial.println("Publish success");
-  } else {
-    Serial.println("Publish failed");
-  }
+  // if(client.endMessage()){
+  //   Serial.println("Publish success");
+  // } else {
+  //   Serial.println("Publish failed");
+  // }
 }
 
-
 void loop() {
-  client.poll();  // Keep MQTT connection alive
-  
-  // if(!client.connected()){
-  //   reconnect();
-  // }
-  delay(1000);
+  if (toggleRecordingRequested) {
+    toggleRecordingRequested = false;
+    if (recording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }
+
+  if (recording) {
+    sendAudio();
+  }
+
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.poll();
+  // delay(10);
 }
 
 
