@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x86</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|win32">
+      <Configuration>Debug</Configuration>
+      <Platform>win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|win32">
+      <Configuration>Release</Configuration>
+      <Platform>win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{182746DA-64B0-3560-ACD1-1EE0E700E477}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Platform>win32</Platform>
+    <ProjectName>arduino_emulator</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">arduino_emulator.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">arduino_emulator</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|win32'">arduino_emulator.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|win32'">arduino_emulator</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">arduino_emulator.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">arduino_emulator</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">arduino_emulator.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">arduino_emulator</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -O0</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HOST;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;HOST;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HOST;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\libraries;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/tests-cmake/resample_ext -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\CMakeFiles\cmake.verify_globs;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\Arduino.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|win32'">Building Custom Rule C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/tests-cmake/resample_ext -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\CMakeFiles\cmake.verify_globs;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\Arduino.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">Building Custom Rule C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/tests-cmake/resample_ext -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\CMakeFiles\cmake.verify_globs;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\Arduino.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">Building Custom Rule C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/tests-cmake/resample_ext -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\CMakeFiles\cmake.verify_globs;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\Arduino.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\arduino-audio-tools\emulator\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsg.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsgRingbuffer.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Common.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\IPAddress.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\PluggableUSB.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Print.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Stream.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\String.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Arduino.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\GPIOWrapper.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\I2CWrapper.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\MD5Builder.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Main.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\SPIWrapper.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\SocketImpl.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\UDP.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Unsupported.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\WMath.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\cbuf.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\itoa.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\serialib.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareGPIO_FTDI.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareI2C_FTDI.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareSPI_FTDI.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareGPIO_RPI.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareI2C_RPI.cpp" />
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareSPI_RPI.cpp" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\ArduinoAPI.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Binary.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsg.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsgRingbuffer.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Client.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Common.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Compat.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\DMAPool.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareCAN.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareI2C.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareSPI.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareSerial.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\IPAddress.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Interrupts.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\PluggableUSB.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Print.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Printable.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\RingBuffer.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Server.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Stream.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\String.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\USBAPI.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Udp.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\WCharacter.h" />
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\itoa.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\ZERO_CHECK.vcxproj">
+      <Project>{B7F5ED78-7513-3C7B-9E85-F05B74AB1AB6}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

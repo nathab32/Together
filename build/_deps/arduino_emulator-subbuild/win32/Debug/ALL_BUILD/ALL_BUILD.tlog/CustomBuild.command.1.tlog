@@ -1,0 +1,10 @@
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

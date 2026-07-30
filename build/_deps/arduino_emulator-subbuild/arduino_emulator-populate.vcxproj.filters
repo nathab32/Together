@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-update_disconnected.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-patch_disconnected.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\ae7b615dd7789e8b33565a1b3f7dc2d2\arduino_emulator-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\d8beb28e4f7de5271b4536c68cf65860\arduino_emulator-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\arduino_emulator-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2AA287E3-EBA4-363B-8E3F-2C37B98EC179}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

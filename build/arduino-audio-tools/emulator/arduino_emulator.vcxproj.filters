@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsgRingbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\IPAddress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\PluggableUSB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Print.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\String.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Arduino.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\GPIOWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\I2CWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\MD5Builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\SPIWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\SocketImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\UDP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\Unsupported.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\WMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\cbuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\itoa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\arduino\serialib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareGPIO_FTDI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareI2C_FTDI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\ftdi\HardwareSPI_FTDI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareGPIO_RPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareI2C_RPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-Linux\cores\rasperry_pi\HardwareSPI_RPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\ArduinoAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\CanMsgRingbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\DMAPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareCAN.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareI2C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareSPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\HardwareSerial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\IPAddress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Interrupts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\PluggableUSB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Print.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Printable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\RingBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\String.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\USBAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\Udp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\WCharacter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\ArduinoCore-API\api\itoa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C655AB1A-41EC-39A9-B90E-64B27FCE467B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A00DFB75-1440-3CBF-9D3F-6D8D9222176D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

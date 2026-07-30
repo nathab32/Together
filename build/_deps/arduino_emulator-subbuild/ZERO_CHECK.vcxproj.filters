@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\d8beb28e4f7de5271b4536c68cf65860\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2AA287E3-EBA4-363B-8E3F-2C37B98EC179}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\D8BEB28E4F7DE5271B4536C68CF65860\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

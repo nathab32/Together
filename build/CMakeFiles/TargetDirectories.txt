@@ -1,0 +1,9 @@
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/CMakeFiles/resample_ext.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/CMakeFiles/INSTALL.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/CMakeFiles/INSTALL.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/CMakeFiles/ALL_BUILD.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/arduino_emulator.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/INSTALL.dir
+C:/Users/natha/Documents/PlatformIO/Projects/Together/build/arduino-audio-tools/emulator/CMakeFiles/ALL_BUILD.dir

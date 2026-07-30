@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x86</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|win32">
+      <Configuration>Debug</Configuration>
+      <Platform>win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D105E9CD-EF10-3922-B213-3C24064DBE9F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <Platform>win32</Platform>
+    <ProjectName>arduino_emulator-populate</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-mkdir.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Creating directories for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-mkdir</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-download.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Performing download step (git clone) for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\arduino_emulator-populate-gitinfo.txt;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-mkdir;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-download</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-update_disconnected.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Performing disconnected update step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcan_fetch=NO -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-update_disconnected
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\tmp\arduino_emulator-populate-gitupdate.cmake;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\arduino_emulator-populate-update-info.txt;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-download;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-update_disconnected</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-patch_disconnected.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">No patch_disconnected step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-patch_disconnected
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\arduino_emulator-populate-patch-info.txt;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-update_disconnected;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-patch_disconnected</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-configure.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">No configure step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\tmp\arduino_emulator-populate-cfgcmd.txt;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-patch_disconnected;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-configure</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-build.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">No build step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-configure;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-build</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-install.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">No install step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-build;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-install</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\5660713150c9c3535d7481a111ff42ce\arduino_emulator-populate-test.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">No test step for 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-install;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-test</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\ae7b615dd7789e8b33565a1b3f7dc2d2\arduino_emulator-populate-complete.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Completed 'arduino_emulator-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/Debug/arduino_emulator-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-install;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-mkdir;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-download;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-update_disconnected;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-patch_disconnected;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-configure;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-build;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\src\arduino_emulator-populate-stamp\Debug\arduino_emulator-populate-test;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\Debug\arduino_emulator-populate-complete</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\d8beb28e4f7de5271b4536c68cf65860\arduino_emulator-populate.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\Debug\arduino_emulator-populate-complete;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\arduino_emulator-populate</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">Building Custom Rule C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\PatchInfo.txt.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\RepositoryInfo.txt.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\UpdateInfo.txt.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\cfgcmd.txt.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\gitclone.cmake.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\gitupdate.cmake.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\mkdirs.cmake.in;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\Platform\Windows.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\3.28.3-msvc11\CMakeSystem.cmake;C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\arduino_emulator-populate-prefix\tmp\arduino_emulator-populate-mkdirs.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\CMakeFiles\arduino_emulator-populate">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-subbuild\ZERO_CHECK.vcxproj">
+      <Project>{995571B3-B2DD-3687-9482-AE9549CA9E92}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

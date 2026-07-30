@@ -193,13 +193,14 @@ class CsvOutput : public AudioOutput {
     } else if (len == sizeof(T)) {
       // if the write contains less then a frame we buffer the data
       T *data_value = (T *)data;
+      out_ptr->print(delimiter_str);
       out_ptr->print(data_value[0]);
       channel++;
       if (channel == cfg.channels) {
         out_ptr->println();
         channel = 0;
       } else {
-        out_ptr->print(delimiter_str);
+        // out_ptr->print(delimiter_str);
       }
     } else {
       LOGE("Unsupported size: %d for channels %d and bits: %d", (int)len,
@@ -224,10 +225,11 @@ class CsvOutput : public AudioOutput {
       for (int ch = 0; ch < cfg.channels; ch++) {
         if (out_ptr != nullptr && data_ptr != nullptr) {
           T value = *data_ptr;
+          out_ptr->print(delimiter_str);
           out_ptr->print(value);
         }
         data_ptr++;
-        if (ch < cfg.channels - 1) this->out_ptr->print(delimiter_str);
+        // if (ch < cfg.channels - 1) this->out_ptr->print(delimiter_str);
       }
       this->out_ptr->println();
     }

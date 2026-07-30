@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMakePredefinedTargets", "CMakePredefinedTargets", "{2390D057-9A5F-3BE2-9C8D-DDA386772D28}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalProjectTargets", "ExternalProjectTargets", "{5A1C2D53-0E86-3FAC-8DC5-110FDD6E4DE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "arduino_emulator-populate", "ExternalProjectTargets\arduino_emulator-populate", "{923DBD38-68F1-31FC-BB46-DBDFE217836A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{4BFC2A9A-940E-368E-AD97-EDE57504BF43}"
+	ProjectSection(ProjectDependencies) = postProject
+		{995571B3-B2DD-3687-9482-AE9549CA9E92} = {995571B3-B2DD-3687-9482-AE9549CA9E92}
+		{D105E9CD-EF10-3922-B213-3C24064DBE9F} = {D105E9CD-EF10-3922-B213-3C24064DBE9F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{995571B3-B2DD-3687-9482-AE9549CA9E92}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arduino_emulator-populate", "arduino_emulator-populate.vcxproj", "{D105E9CD-EF10-3922-B213-3C24064DBE9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{995571B3-B2DD-3687-9482-AE9549CA9E92} = {995571B3-B2DD-3687-9482-AE9549CA9E92}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|win32 = Debug|win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BFC2A9A-940E-368E-AD97-EDE57504BF43}.Debug|win32.ActiveCfg = Debug|win32
+		{995571B3-B2DD-3687-9482-AE9549CA9E92}.Debug|win32.ActiveCfg = Debug|win32
+		{995571B3-B2DD-3687-9482-AE9549CA9E92}.Debug|win32.Build.0 = Debug|win32
+		{D105E9CD-EF10-3922-B213-3C24064DBE9F}.Debug|win32.ActiveCfg = Debug|win32
+		{D105E9CD-EF10-3922-B213-3C24064DBE9F}.Debug|win32.Build.0 = Debug|win32
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4BFC2A9A-940E-368E-AD97-EDE57504BF43} = {2390D057-9A5F-3BE2-9C8D-DDA386772D28}
+		{995571B3-B2DD-3687-9482-AE9549CA9E92} = {2390D057-9A5F-3BE2-9C8D-DDA386772D28}
+		{923DBD38-68F1-31FC-BB46-DBDFE217836A} = {5A1C2D53-0E86-3FAC-8DC5-110FDD6E4DE7}
+		{D105E9CD-EF10-3922-B213-3C24064DBE9F} = {923DBD38-68F1-31FC-BB46-DBDFE217836A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC5100E5-B351-3125-8430-10B21C03C5B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

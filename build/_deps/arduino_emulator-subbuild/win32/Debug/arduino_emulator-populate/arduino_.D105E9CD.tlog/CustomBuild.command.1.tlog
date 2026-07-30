@@ -1,0 +1,152 @@
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-UPDATE_DISCONNECTED.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcan_fetch=NO -P C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/tmp/arduino_emulator-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-update_disconnected
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-PATCH_DISCONNECTED.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-patch_disconnected
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\5660713150C9C3535D7481A111FF42CE\ARDUINO_EMULATOR-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\natha\Documents\PlatformIO\Projects\Together\build\_deps\arduino_emulator-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\AE7B615DD7789E8B33565A1B3F7DC2D2\ARDUINO_EMULATOR-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/Debug/arduino_emulator-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/arduino_emulator-populate-prefix/src/arduino_emulator-populate-stamp/Debug/arduino_emulator-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKEFILES\D8BEB28E4F7DE5271B4536C68CF65860\ARDUINO_EMULATOR-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NATHA\DOCUMENTS\PLATFORMIO\PROJECTS\TOGETHER\BUILD\_DEPS\ARDUINO_EMULATOR-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild -BC:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild --check-stamp-file C:/Users/natha/Documents/PlatformIO/Projects/Together/build/_deps/arduino_emulator-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

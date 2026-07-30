@@ -1,0 +1,46 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"C:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 35,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "include/arduino-audio-tools",
+			"paths" : 
+			[
+				{
+					"from" : "C:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main/src",
+					"to" : "."
+				}
+			],
+			"type" : "directory"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "arduino-audio-tools",
+		"source" : "C:/Users/natha/Documents/PlatformIO/Projects/Together/lib/arduino-audio-tools-main"
+	}
+}
