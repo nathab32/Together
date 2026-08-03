@@ -6,22 +6,27 @@
 
 #include <WiFi.h>
 #include "ArduinoMqttClient.h"
-// #include <PubSubClient.h>
+#include <WiFiManager.h>
 
 WiFiClient espClient;
 MqttClient client(espClient);
-// PubSubClient client(espClient);
-
-// PINS
 
 Audio audio;
+// CsvOutput<int16_t> csvOutput(Serial);
 
-// OneButton L(0);
-// OneButton C(2);
-// OneButton R(4);
+OneButton L(0);
+OneButton C(2);
+OneButton R(4);
 
 bool recording = false;
 bool toggleRecordingRequested = false;
+
+bool toneOn = false;
+bool toggleTone = false;
+
+bool receiving = false;
+bool toggleReceiveRequested = false;
+bool isPlaying = false;
 
 void reconnect() {
   while(!client.connected()){
@@ -58,38 +63,96 @@ void LPfunction(void *OneButton) {
 }
 
 void startRecording() {
-  if (!client.connected()) reconnect();
-  if (client.beginMessage("esp32/audio/control", false)) {
-    client.print("START");
-    client.endMessage();
+  // if (!client.connected()) reconnect();
+  // if (client.beginMessage("esp32/audio/control", false)) {
+  //   client.print("START_RECORDING");
+  //   client.endMessage();
+  //   recording = true;
+  //   Serial.println("Recording started");
+  // } else {
+  //   Serial.println("Failed to start recording: beginMessage failed");
+  // }
+  if (audio.beginUpload("10.0.0.78", 8000, "/upload_audio")){
     recording = true;
-    Serial.println("Recording started");
-  } else {
-    Serial.println("Failed to start recording: beginMessage failed");
+    Serial.println("Uploading audio via HTTP POST");
   }
-  audio.beginEncoder();
 }
 
 void stopRecording() {
   if (!recording) return;
-  if (client.beginMessage("esp32/audio/control", false)) {
-    client.print("STOP");
-    client.endMessage();
-    Serial.println("Recording stopped and published");
-  } else {
-    Serial.println("Recording stop failed");
-  }
+  // if (client.beginMessage("esp32/audio/control", false)) {
+  //   client.print("STOP_RECORDING");
+  //   client.endMessage();
+  //   Serial.println("Recording stopped and published");
+  // } else {
+  //   Serial.println("Recording stop failed");
+  // }
+  audio.endUpload();
   recording = false;
+  Serial.println("Upload finished");
 }
 
-void sendAudio() {
-  client.beginMessage("esp32/audio/stream", BUFFER_SIZE, false);
-  audio.copyMic();
-  client.endMessage();
+void onMessageCallback(int messageSize) {
+  String topic = client.messageTopic();
+  // Serial.print("Received a message with topic '");
+  // Serial.print(topic);
+  // Serial.print("', length ");
+  // Serial.print(messageSize);
+  // Serial.println(" bytes:");
+
+
+  // if (topic == "esp32/audio/out")
+  // {
+  //   int bytesRead = 0;
+  //   uint8_t buffer[256];
+
+  //   while(bytesRead < messageSize){
+  //     if (client.available()){
+  //       int remaining = messageSize - bytesRead;
+  //       int toRead = std::min((int)sizeof(buffer), remaining);
+
+  //       int currentRead = client.read(buffer, toRead);
+
+  //       if(currentRead > 0) {
+  //         bytesRead += currentRead;
+  //         audio.writeDecoder(buffer, currentRead);
+  //       }
+  //     } else {
+  //       delay(1);
+  //     }
+
+      
+      
+  //   }
+  // }
+  
+  if(topic == "esp32/audio/control") {
+    String message = "";
+
+    while(client.available()){
+      message += (char)client.read();
+    }
+
+    if(message == "STOP_SEND") {
+      receiving = false;
+      client.unsubscribe("esp32/audio/out");
+      Serial.println("unsubscribed from audio/out");
+    }
+  }
+
+  // Serial.println();
 }
 
-void LinterruptCallback() {
+void callback_L() {
   toggleRecordingRequested = true;
+}
+
+void callback_C() {
+  toggleTone = true;
+}
+
+void callback_R() {
+  toggleReceiveRequested = true;
 }
 
 void setup() {
@@ -98,16 +161,22 @@ void setup() {
   while(!Serial);
   Serial.println("Program Start");
 
-  // L.attachClick(LPfunction, &L);
-  pinMode(0, INPUT_PULLUP);
-  attachInterrupt(0, LinterruptCallback, FALLING);
+  L.attachClick(callback_L);
+  C.attachClick(callback_C);
+  R.attachClick(callback_R);
 
   Serial.print("Connecting to: ");
   Serial.println(SSID);
 
   WiFi.begin(SSID, PASS);
 
-  while(WiFi.status() != WL_CONNECTED){
+  // WiFiManager wm;
+  // wm.resetSettings();
+  // wm.autoConnect("Together");
+
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
     Serial.print(".");
     delay(500);
   }
@@ -115,32 +184,30 @@ void setup() {
   Serial.println("WiFi connected: ");
   Serial.println(WiFi.localIP());
 
-  // client.setServer(mqtt_serv, 1883);
 
   // initialize audio after Serial is ready
   audio.beginLogger();
-  if (!audio.beginEncoderStream(client)) Serial.println("beginEncoderStream failed");
+  if (!audio.beginSineGenerator()) Serial.println("beginSine failed");
   if (!audio.beginMic()) Serial.println("beginMic failed");
-  // if (!audio.beginAmp()) Serial.println("beginAmp failed");
-  // audio.setVolume(0.5);
+  if (!audio.beginAmp()) Serial.println("beginAmp failed");
+  audio.ampOn();
+  audio.setSpeakerVolume(0.3);
+
   
   if(!client.connected()){
     reconnect();
   }
+  client.onMessage(onMessageCallback);
+  client.subscribe("esp32/audio/control");
 
-  // client.beginMessage(MQTT_USER, BUFFER_SIZE * AUDIO_BUFFER_COUNT, true);
-
-  // // copier.copyN(AUDIO_BUFFER_COUNT);
-  // audio.copyMic(AUDIO_BUFFER_COUNT);
-
-  // if(client.endMessage()){
-  //   Serial.println("Publish success");
-  // } else {
-  //   Serial.println("Publish failed");
-  // }
 }
 
 void loop() {
+  L.tick();
+  C.tick();
+  R.tick();
+  client.poll();
+
   if (toggleRecordingRequested) {
     toggleRecordingRequested = false;
     if (recording) {
@@ -151,7 +218,43 @@ void loop() {
   }
 
   if (recording) {
-    sendAudio();
+    // if(audio.uploadMic()){
+    //   Serial.println("Audio uploaded to HTTP");
+    // } else {
+    //   Serial.println("No audio written to HTTP");
+    // }
+    Serial.println(audio.uploadMic());
+  }
+
+  if (toggleTone) {
+    toggleTone = false;
+    toneOn = !toneOn;
+  }
+  
+  if(toneOn){
+      audio.copySpeaker();
+  }
+  
+  if (toggleReceiveRequested) {
+    toggleReceiveRequested = false;
+    // // receiving = !receiving;
+    // client.beginMessage("esp32/audio/control");
+    // client.print("SEND");
+    // client.endMessage();
+
+    // Serial.println("listening to audio/out");
+    // client.subscribe("esp32/audio/out");
+    if(audio.beginURL_Stream("http://10.0.0.78:8000/recording_1781924740.wav")){
+      Serial.println("Reading from URL now");
+      isPlaying = true;
+    }
+  }
+
+  if (isPlaying) {
+    if(audio.copyURLStream(20) == 0 && !audio.URL_Available()){
+      Serial.println("Playback finished");
+      isPlaying = false;
+    }
   }
 
   if (!client.connected()) {
@@ -246,4 +349,44 @@ void loop() {
 // void loop() {
 //   // Handle new connections
 //   server.copy();  
+// }
+
+// #include "AudioTools.h"
+// #include "AudioTools/AudioCodecs/CodecFLAC.h"
+// #include "AudioTools/Communication/AudioHttp.h"
+// #include "Audio.h"
+
+// const char* ssid = SSID;
+// const char* pwd = PASS;
+// URLStream url(ssid, pwd);
+// FLACDecoder dec;
+// I2SStream i2s;
+
+
+// WORKING AUDIO PLAYBACK (INCREASE BUFFER SIZE)
+// void setup() {
+//   Serial.begin(115200);
+//   AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);  
+
+//   auto config_amp = i2s.defaultConfig(TX_MODE);
+//   config_amp.sample_rate = 44100;
+//   config_amp.bits_per_sample = 16;
+//   config_amp.i2s_format = I2S_STD_FORMAT;
+//   config_amp.buffer_size = 1024;
+//   config_amp.buffer_count = 8;
+//   config_amp.channel_format = I2S_CHANNEL_FMT_ALL_LEFT; // For mono, use left channel
+//   config_amp.port_no = 1;
+//   config_amp.pin_ws = MAX_LRC;
+//   config_amp.pin_bck = MAX_BCLK;
+//   config_amp.pin_data = MAX_DIN;
+//   i2s.begin(config_amp);
+
+//   url.begin("https://github.com/ietf-wg-cellar/flac-test-files/raw/refs/heads/main/subset/01%20-%20blocksize%204096.flac");
+//   dec.setInput(url);
+//   dec.setOutput(i2s);
+//   dec.begin();
+// }
+
+// void loop() {
+//   dec.copy();
 // }

@@ -1,7 +1,10 @@
 #include "Audio.h"
 
 Audio::Audio()
-    : micVolume(nullptr), micCopier(nullptr), speakerVolume(nullptr), speakerCopier(nullptr), out_stream(nullptr)
+    : micVolume(nullptr), micCopier(nullptr), 
+    speakerVolume(nullptr), speakerCopier(nullptr), 
+    decoder(nullptr),
+    sineGenerator(nullptr), sineStream(nullptr)
 {
     info = AudioInfo(SAMPLE_RATE, 1, BIT_DEPTH);
 }
@@ -12,11 +15,15 @@ Audio::~Audio(){
 
     if (speakerCopier) { delete speakerCopier; speakerCopier = nullptr; }
     if (speakerVolume) { delete speakerVolume; speakerVolume = nullptr; }
-    if (out_stream) { delete out_stream; out_stream = nullptr; }
+
+    if (decoder) { delete decoder; decoder = nullptr; }
+
+    if (sineGenerator) { delete sineGenerator; sineGenerator = nullptr; }
+    if (sineStream) { delete sineStream; sineStream = nullptr; }
 }
 
 void Audio::beginLogger(){
-    AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);
+    AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Warning);
 }
 
 bool Audio::beginMic(){
@@ -36,11 +43,6 @@ bool Audio::beginMic(){
 
     if(!mic.begin(config_mic)) return false;
 
-    if (!out_stream) {
-        Serial.println("Audio::beginMic: out_stream is null; call beginEncoder() first");
-        return false;
-    }
-
     if(!micVolume) {
         micVolume = new VolumeStream(mic);
         auto vcfg = micVolume->defaultConfig();
@@ -51,9 +53,6 @@ bool Audio::beginMic(){
         micVolume->setVolume(200);
     }
 
-
-    if (!micCopier) micCopier = new StreamCopy(*out_stream, *micVolume, BUFFER_SIZE);
-
     return true;
 }
 
@@ -61,16 +60,19 @@ bool Audio::beginAmp(){
     auto config_amp = amp.defaultConfig(TX_MODE);
     config_amp.copyFrom(info);
     config_amp.i2s_format = I2S_STD_FORMAT;
-    config_amp.channel_format = I2S_CHANNEL_FMT_ALL_LEFT;  // For mono, use left channel
+    config_amp.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;  // For mono, use left channel
+    config_amp.buffer_size = 1024;
+    config_amp.buffer_count = 8;
     config_amp.port_no = 1;
     config_amp.pin_ws = MAX_LRC;
     config_amp.pin_bck = MAX_BCLK;
     config_amp.pin_data = MAX_DIN;
     if (!amp.begin(config_amp)) return false;
 
-    // Create volume and speakerCopier at runtime (after amp and mic exist)
+    pinMode(MAX_MODE, OUTPUT);
+
     if (!speakerVolume) speakerVolume = new VolumeStream(amp);
-    // if (!speakerCopier) speakerCopier = new StreamCopy(*speakerVolume, );
+    if (!speakerCopier) speakerCopier = new StreamCopy(*speakerVolume, *sineStream);
     
 
     auto vcfg = speakerVolume->defaultConfig();
@@ -79,11 +81,76 @@ bool Audio::beginAmp(){
     return speakerVolume->begin(vcfg);
 }
 
-bool Audio::beginEncoderStream(MqttClient &client){
-    out_stream = new EncodedAudioStream(&client, new WAVEncoder());
-    return out_stream->begin(info);
+bool Audio::beginUpload(const char *host, int port, const char *path){
+    if (!uploadClient.connect(host, port)){
+        Serial.println("Couldn't connect to server.");
+        return false;
+    }
+
+    // Send HTTP POST headers
+    uploadClient.println("POST " + String(path) + " HTTP/1.1");
+    uploadClient.println("Host: " + String(host));
+    uploadClient.println("Content-Type: application/octet-stream");
+    uploadClient.println("Transfer-Encoding: chunked");
+    uploadClient.println("Connection: keep-alive");
+    uploadClient.println(); 
+    return true;
 }
 
-bool Audio::beginEncoder(){
-    return out_stream->getEncoder()->begin();
+size_t Audio::uploadMic(){
+    uint8_t buf[BUFFER_SIZE];
+    size_t len = micVolume->readBytes(buf, BUFFER_SIZE);
+    if (len > 0) {
+        uploadClient.print(len, HEX);
+        uploadClient.print("\r\n");
+
+        size_t written = uploadClient.write(buf, len);
+        uploadClient.print("\r\n");
+
+        uploadClient.flush();
+        return written;
+    }
+    return false;
+}
+
+void Audio::endUpload(){
+    uploadClient.print("0\r\n\r\n");
+    uploadClient.flush();
+    uploadClient.stop();
+}
+
+//private
+void Audio::setupDecoder(){
+    if (decoder) delete decoder;
+    decoder = new EncodedAudioStream(speakerVolume, new WAVDecoder());
+    decoder->begin();
+}
+
+
+bool Audio::beginURL_Stream(const char* audio_url){
+    if(!http.begin(audio_url, "audio/wav")) return false;
+
+    if (bufferedStream) delete bufferedStream;
+    bufferedStream = new BufferedStream(http, 16384);
+
+    setupDecoder();
+    if (urlCopier) delete urlCopier;
+    urlCopier = new StreamCopy(*decoder, *bufferedStream, 1024);
+    return true;
+}
+
+int Audio::copyURLStream(int pages){
+    return urlCopier->copyN(pages);
+}
+
+bool Audio::URL_Available(){
+    return http.available();
+}
+
+bool Audio::beginSineGenerator(){
+    if(!sineGenerator) sineGenerator = new SineGenerator<int16_t>();
+    if(!sineGenerator->begin(info, N_A4)) return false;
+
+    if(!sineStream) sineStream = new GeneratedSoundStream<int16_t>(*sineGenerator);
+    return sineStream->begin(info);
 }
