@@ -81,15 +81,18 @@ bool Audio::beginAmp(){
     return speakerVolume->begin(vcfg);
 }
 
-bool Audio::beginUpload(const char *host, int port, const char *path){
+bool Audio::beginUpload(const char *host, int port, const char *path, String user, String pass){
     if (!uploadClient.connect(host, port)){
         Serial.println("Couldn't connect to server.");
         return false;
     }
 
+    String encoded = base64::encode(user + ":" + pass);
+
     // Send HTTP POST headers
     uploadClient.println("POST " + String(path) + " HTTP/1.1");
     uploadClient.println("Host: " + String(host));
+    uploadClient.println("Authorization: Basic " + encoded);
     uploadClient.println("Content-Type: application/octet-stream");
     uploadClient.println("Transfer-Encoding: chunked");
     uploadClient.println("Connection: keep-alive");
@@ -126,8 +129,15 @@ void Audio::setupDecoder(){
     decoder->begin();
 }
 
+void Audio::addCredentialsToURL(String user, String pass){
+    String encoded = base64::encode(user + ":" + pass);
+    http.addRequestHeader("Authorization", ("Basic " + encoded).c_str());
+}
 
-bool Audio::beginURL_Stream(const char* audio_url){
+bool Audio::beginURL_Stream(const char* audio_url, String user, String pass){
+
+    String encoded = base64::encode(user + ":" + pass);
+    http.addRequestHeader("Authorization", ("Basic " + encoded).c_str());
     if(!http.begin(audio_url, "audio/wav")) return false;
 
     if (bufferedStream) delete bufferedStream;

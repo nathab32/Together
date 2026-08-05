@@ -5,6 +5,7 @@
 #include <AudioTools.h>
 #include "AudioTools/Communication/AudioHttp.h"
 #include <WiFi.h>
+#include <base64.h>
 
 #define MAX_DIN 32 
 #define MAX_LRC 33
@@ -13,13 +14,11 @@
 
 #define MIC_DATA 18
 #define MIC_WS 19
-// #define INMP_BCLK 21
 
 #define SAMPLE_RATE 16000
 #define BIT_DEPTH 16
 
 #define BUFFER_SIZE 1024
-static constexpr int AUDIO_BUFFER_COUNT = 250;
 
 
 class Audio
@@ -57,13 +56,15 @@ public:
     void ampOn() { digitalWrite(MAX_MODE, HIGH); }
     void ampOff() { digitalWrite(MAX_MODE, LOW); }
 
-    bool beginUpload(const char *host, int port, const char *path);
+    bool beginUpload(const char *host, int port, const char *path, String user, String pass);
     size_t uploadMic();
     void endUpload();
 
-    bool beginURL_Stream(const char* audio_url);
+    void addCredentialsToURL(String user, String pass);
+    bool beginURL_Stream(const char* audio_url, String user, String pass);
     int copyURLStream(int pages);
     bool URL_Available();
+    void endURL() { http.end(); }
 
     bool beginSineGenerator();
 
