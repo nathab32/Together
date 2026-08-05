@@ -1,6 +1,7 @@
 #include <AudioTools.h>
 #include "Credentials.h"
 #include "Audio.h"
+#include "HTTP.h"
 
 #include <OneButton.h>
 
@@ -8,11 +9,15 @@
 #include "ArduinoMqttClient.h"
 #include <WiFiManager.h>
 
+#include <Preferences.h>
+
+#include <ArduinoJson.h>
+
 WiFiClient espClient;
 MqttClient client(espClient);
 
 Audio audio;
-// CsvOutput<int16_t> csvOutput(Serial);
+HTTP http;
 
 OneButton L(0);
 OneButton C(2);
@@ -27,6 +32,14 @@ bool toggleTone = false;
 bool receiving = false;
 bool toggleReceiveRequested = false;
 bool isPlaying = false;
+struct Credentials {
+  String user;
+  String pass;
+  String server;
+  String invite;
+};
+
+Credentials creds;
 
 void reconnect() {
   while(!client.connected()){
@@ -57,22 +70,8 @@ void reconnect() {
   }
 }
 
-void LPfunction(void *OneButton) {
-    Serial.println("L pressed");
-    toggleRecordingRequested = true;
-}
-
 void startRecording() {
-  // if (!client.connected()) reconnect();
-  // if (client.beginMessage("esp32/audio/control", false)) {
-  //   client.print("START_RECORDING");
-  //   client.endMessage();
-  //   recording = true;
-  //   Serial.println("Recording started");
-  // } else {
-  //   Serial.println("Failed to start recording: beginMessage failed");
-  // }
-  if (audio.beginUpload("10.0.0.78", 8000, "/upload_audio")){
+  if (audio.beginUpload(creds.server.c_str(), 8000, "/upload_audio", creds.user, creds.pass)){
     recording = true;
     Serial.println("Uploading audio via HTTP POST");
   }
@@ -155,6 +154,67 @@ void callback_R() {
   toggleReceiveRequested = true;
 }
 
+
+/////////// WiFiManager  ///////////
+WiFiManagerParameter togetherUser("Username", "Username", "", 20);
+WiFiManagerParameter togetherPass("Password", "Password", "", 20);
+WiFiManagerParameter togetherServer("Server", "Server", "", 20);
+WiFiManagerParameter togetherInvite("Invite_Code", "Invite Code", "2c41acc5", 8);
+
+WiFiManager wm;
+
+bool shouldSaveConfig = false;
+
+void saveConfigCallback(){
+  Serial.println("Should save config");
+  shouldSaveConfig = true;
+}
+
+bool shouldSaveParams = false;
+
+void saveParamsCallback(){
+  Serial.println("Should save params");
+  shouldSaveParams = true;
+}
+
+void saveParams(){
+  Preferences pref;
+
+  pref.begin("TogetherCreds", false);
+
+  String user = togetherUser.getValue();
+  if(!user.equals("")){ 
+    pref.putString("username", user);
+    creds.user = user;
+  }
+
+  String pass = togetherPass.getValue();
+  if(!pass.equals("")){
+    pref.putString("password", pass);
+    creds.pass = pass;
+  }
+
+  String server = togetherServer.getValue();
+  if(!server.equals("")){
+    pref.putString("server", server);
+    creds.server = server;
+  }
+  
+  String invite = togetherInvite.getValue();
+  if(!invite.equals("")){
+    pref.putString("invite", invite);
+    creds.invite = invite;
+  }
+
+  pref.end();
+
+  shouldSaveParams = false;
+  Serial.println("New login info saved");
+
+  http.updateCreds();
+}
+
+////////////////////////// SETUP //////////////////////////
 void setup() {
   delay(100);
   Serial.begin(115200);
@@ -165,15 +225,39 @@ void setup() {
   C.attachClick(callback_C);
   R.attachClick(callback_R);
 
-  Serial.print("Connecting to: ");
-  Serial.println(SSID);
+  Preferences preferences;
+  preferences.begin("TogetherCreds", true);
+  creds.user = preferences.getString("username");
+  creds.pass = preferences.getString("password");
+  creds.server = preferences.getString("server");
+  creds.invite = preferences.getString("invite");
+  preferences.end();
 
-  WiFi.begin(SSID, PASS);
+  // wm.resetSettings(); //remove saved wifis for testing
 
-  // WiFiManager wm;
-  // wm.resetSettings();
-  // wm.autoConnect("Together");
+  wm.setAPStaticIPConfig(IPAddress(142, 250, 186, 131), IPAddress(142, 250, 186, 0), IPAddress(255, 255, 255, 0));
+  wm.setSaveConfigCallback(saveConfigCallback);
 
+  wm.addParameter(&togetherUser);
+  wm.addParameter(&togetherPass);
+  wm.addParameter(&togetherServer);
+  wm.addParameter(&togetherInvite);
+
+  wm.setSaveParamsCallback(saveParamsCallback);
+  wm.setParamsPage(true);
+
+  // wm.startConfigPortal("Together");
+  wm.autoConnect("Together");
+
+  if(shouldSaveParams){
+    saveParams();
+  }
+  http.updateCreds();
+  
+  if(!http.testLogin()){
+    http.registerUser();
+  }
+  
 
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -237,22 +321,25 @@ void loop() {
   
   if (toggleReceiveRequested) {
     toggleReceiveRequested = false;
-    // // receiving = !receiving;
-    // client.beginMessage("esp32/audio/control");
-    // client.print("SEND");
-    // client.endMessage();
+    std::vector<String> fileList = http.fetchFileList();
 
-    // Serial.println("listening to audio/out");
-    // client.subscribe("esp32/audio/out");
-    if(audio.beginURL_Stream("http://10.0.0.78:8000/recording_1781924740.wav")){
-      Serial.println("Reading from URL now");
-      isPlaying = true;
+    if(fileList.size() > 0){
+      Serial.println("The following files are available:");
+      for(String fileName : fileList){
+        Serial.println(fileName);
+      }
     }
+
+    // if(audio.beginURL_Stream(("http://" + creds.server + ":8000/recording_1781924740.wav").c_str(), creds.user, creds.pass)){
+    //   Serial.println("Reading from URL now");
+    //   isPlaying = true;
+    // }
   }
 
   if (isPlaying) {
     if(audio.copyURLStream(20) == 0 && !audio.URL_Available()){
       Serial.println("Playback finished");
+      audio.endURL();
       isPlaying = false;
     }
   }
