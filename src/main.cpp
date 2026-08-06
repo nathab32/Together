@@ -1,5 +1,4 @@
 #include <AudioTools.h>
-#include "Credentials.h"
 #include "Audio.h"
 #include "HTTP.h"
 
@@ -14,7 +13,6 @@
 #include <ArduinoJson.h>
 
 WiFiClient espClient;
-MqttClient client(espClient);
 
 Audio audio;
 HTTP http;
@@ -41,35 +39,6 @@ struct Credentials {
 
 Credentials creds;
 
-void reconnect() {
-  while(!client.connected()){
-    Serial.println("Reconnecting to MQTT");
-
-    String clientID = "ESP32Client-";
-    clientID += String(random(0xffff), HEX);
-
-    // pubsubclient code
-    // if(client.connect(clientID.c_str(), MQTT_USER, MQTT_PASS)){
-    //   Serial.println("Connected");
-    // } else {
-    //   Serial.print("Failed, code=");
-    //   Serial.println(client.state());
-    //   delay(5000);
-    // }
-
-    //arduinomqttclient code
-    client.setId(clientID);
-    client.setUsernamePassword(MQTT_USER, MQTT_PASS);
-    if(!client.connect(SERVER, 1883)){
-      Serial.println("Failed");
-      delay(5000);
-    } else {
-      Serial.println("Connected");
-      
-    }
-  }
-}
-
 void startRecording() {
   if (audio.beginUpload(creds.server.c_str(), 8000, "/upload_audio", creds.user, creds.pass)){
     recording = true;
@@ -89,57 +58,6 @@ void stopRecording() {
   audio.endUpload();
   recording = false;
   Serial.println("Upload finished");
-}
-
-void onMessageCallback(int messageSize) {
-  String topic = client.messageTopic();
-  // Serial.print("Received a message with topic '");
-  // Serial.print(topic);
-  // Serial.print("', length ");
-  // Serial.print(messageSize);
-  // Serial.println(" bytes:");
-
-
-  // if (topic == "esp32/audio/out")
-  // {
-  //   int bytesRead = 0;
-  //   uint8_t buffer[256];
-
-  //   while(bytesRead < messageSize){
-  //     if (client.available()){
-  //       int remaining = messageSize - bytesRead;
-  //       int toRead = std::min((int)sizeof(buffer), remaining);
-
-  //       int currentRead = client.read(buffer, toRead);
-
-  //       if(currentRead > 0) {
-  //         bytesRead += currentRead;
-  //         audio.writeDecoder(buffer, currentRead);
-  //       }
-  //     } else {
-  //       delay(1);
-  //     }
-
-      
-      
-  //   }
-  // }
-  
-  if(topic == "esp32/audio/control") {
-    String message = "";
-
-    while(client.available()){
-      message += (char)client.read();
-    }
-
-    if(message == "STOP_SEND") {
-      receiving = false;
-      client.unsubscribe("esp32/audio/out");
-      Serial.println("unsubscribed from audio/out");
-    }
-  }
-
-  // Serial.println();
 }
 
 void callback_L() {
@@ -277,20 +195,12 @@ void setup() {
   audio.ampOn();
   audio.setSpeakerVolume(0.3);
 
-  
-  if(!client.connected()){
-    reconnect();
-  }
-  client.onMessage(onMessageCallback);
-  client.subscribe("esp32/audio/control");
-
 }
 
 void loop() {
   L.tick();
   C.tick();
   R.tick();
-  client.poll();
 
   if (toggleRecordingRequested) {
     toggleRecordingRequested = false;
@@ -344,11 +254,6 @@ void loop() {
     }
   }
 
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.poll();
-  // delay(10);
 }
 
 
