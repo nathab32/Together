@@ -1,6 +1,6 @@
 #include "HTTP.h"
 
-void HTTP::updateCreds(){
+void HTTP::updateCreds() {
     Preferences pref;
     pref.begin("TogetherCreds", true);
 
@@ -10,13 +10,28 @@ void HTTP::updateCreds(){
     creds.invite = pref.getString("invite");
 
     pref.end();
+
+    http.setAuthorization(creds.user.c_str(), creds.pass.c_str());
+}
+
+bool HTTP::testConnection() {
+    http.begin(creds.server.c_str(), HTTP_PORT, "/verify_auth");
+    int httpCode = http.sendRequest("HEAD");
+    http.end();
+    if(httpCode < 0){
+        Serial.println("testConnection: Couldn't connect to server.");
+        return false;
+    } else {
+        Serial.println("testConnection: Connected to server");
+        return true;
+    }
+    
+    
 }
 
 bool HTTP::registerUser(){
-    if(!http.connect(creds.server.c_str(), 8000)){
-        Serial.println("registerUser: Couldn't connect to server.");
-        return false;
-    }
+    http.begin(creds.server.c_str(), HTTP_PORT, "/register");
+        
 
     JsonDocument doc;
     doc["username"] = creds.user;
@@ -26,59 +41,59 @@ bool HTTP::registerUser(){
     String jsonBody;
     serializeJson(doc, jsonBody);
 
-    http.println("POST /register HTTP/1.1");
-    http.println("Host: " + creds.server);
-    http.println("Content-Type: application/json");
-    http.print("Content-Length: "); http.println(jsonBody.length());
-    http.println("Connection: close");
-    http.println();
-    http.print(jsonBody);
-
-    unsigned long timeout = millis();
-    while (http.connected() && millis() - timeout < 5000) {
-        if (http.available()) {
-            String line = http.readStringUntil('\n');
-            if (line.startsWith("HTTP/1.1 201")) { // 201 Created
-                http.stop();
-                Serial.println("New user registered");
-                return true;
-            }
-        }
+    http.addHeader("Content-Type", "application/json");
+    int httpCode = http.POST(jsonBody);
+    http.end();
+    if (httpCode == 201) return true;
+    else if (httpCode < 0) {
+        Serial.println("registerUser: Couldn't connect to server.");
+        return false;
     }
-    http.stop();
-    Serial.println("registerUser failed");
-    return false;
+    else {
+        Serial.println("registerUser failed");
+        return false;
+    }
+   
 }
 
 bool HTTP::testLogin(){
-    if(!http.connect(creds.server.c_str(), 8000)){
+    http.begin(creds.server.c_str(), HTTP_PORT, "/verify_auth");
+
+    int httpCode = http.sendRequest("HEAD");
+
+    // http.println("HEAD /verify_auth HTTP/1.1");
+    // http.println("Host: " + creds.server);
+    // http.println(getAuthHeader());
+    // http.println("Connection: close");
+    // http.println();
+
+    // unsigned long timeout = millis();
+    // while(http.begined() && millis() - timeout < 2000){
+    //     if(http.available()){
+    //         String line = http.readStringUntil('\n');
+    //         if(line.startsWith("HTTP/1.1 200")){
+    //             http.end();
+    //             Serial.println("Login successful");
+    //             return true;
+    //         } else if (line.startsWith("HTTP/1.1 401")){
+    //             http.end();
+    //             Serial.println("Login failed: 401 unauthorized");
+    //             return false;
+    //         }
+    //     }
+    // }
+    http.end();
+    if (httpCode == 200) {
+        Serial.println("Server login successful");
+        return true;
+    } else if (httpCode < 0) {
         Serial.println("testLogin(): Couldn't connect to server.");
+        return false;    
+    } else {
+        Serial.println("Server login unsuccessful");
         return false;
     }
-
-    http.println("HEAD /verify_auth HTTP/1.1");
-    http.println("Host: " + creds.server);
-    http.println(getAuthHeader());
-    http.println("Connection: close");
-    http.println();
-
-    unsigned long timeout = millis();
-    while(http.connected() && millis() - timeout < 2000){
-        if(http.available()){
-            String line = http.readStringUntil('\n');
-            if(line.startsWith("HTTP/1.1 200")){
-                http.stop();
-                Serial.println("Login successful");
-                return true;
-            } else if (line.startsWith("HTTP/1.1 401")){
-                http.stop();
-                Serial.println("Login failed: 401 unauthorized");
-                return false;
-            }
-        }
-    }
-    http.stop();
-    return false;
+    
 }
 
 String HTTP::getAuthHeader(){
@@ -87,37 +102,20 @@ String HTTP::getAuthHeader(){
 
 std::vector<String> HTTP::fetchFileList(){
     std::vector<String> fileList;
-    if (!http.connect(creds.server.c_str(), 8000)){
+    http.begin(creds.server.c_str(), HTTP_PORT, "/list_recordings");
+
+    String jsonResponse = "{}";
+    int httpCode = http.GET();
+    http.end();
+
+    if(httpCode == 200) {
+        jsonResponse = http.getString();
+    } else if (httpCode < 0) {
         Serial.println("fetchFileList(): Connection to server failed");
         return fileList;
     }
-    http.println("GET /list_recordings HTTP/1.1");
-    http.println("Host: " + creds.server);
-    http.println(getAuthHeader());
-    http.println("Connection: close");
-    http.println();
-
-    String jsonResponse = "";
-    bool foundStart = false;
-    unsigned long timeout = millis();
-    while (true) {
-        if(http.available())
-        {
-            char c = http.read();
-            if (c == '['){
-                jsonResponse += c;
-                foundStart = true;
-            }
-
-            if (foundStart) {
-                jsonResponse += http.readStringUntil(']');
-                jsonResponse += ']';
-                break;
-            }
-        }
-        if(millis() - timeout > 2000) break;
-    }
-    http.stop();
+    
+    
     Serial.println("Raw response: " + jsonResponse);
     // Parse JSON
     JsonDocument doc;
@@ -136,4 +134,54 @@ std::vector<String> HTTP::fetchFileList(){
         fileList.push_back(name.c_str());
     }
     return fileList;
+}
+
+JsonDocument HTTP::fetchTodayPrompt()
+{
+    JsonDocument doc;
+    http.begin(creds.server.c_str(), HTTP_PORT, "/get_prompt");
+
+
+    // http.println("GET /get_prompt HTTP/1.1");
+    // http.println("Host: " + creds.server);
+    // http.println(getAuthHeader());
+    // http.println("Connection: close");
+    // http.println();
+
+    int httpCode = http.GET();
+    String payload = http.getString();
+    http.end();
+
+    if (httpCode == 200) {
+        deserializeJson(doc, payload);
+    } else if (httpCode < 0) {
+        Serial.println("fetchFileList(): Connection to server failed");
+    }
+
+    return doc;
+}
+
+bool HTTP::submitPrompt(String prompt) {
+    JsonDocument doc;
+    doc["prompt"] = prompt;
+
+    String jsonBody;
+    serializeJson(doc, jsonBody);
+
+    if (!http.begin(creds.server.c_str(), HTTP_PORT, "/submit_prompt")){
+        Serial.println("submitPrompt(): http initialization failed");
+        return false;
+    }
+
+    http.addHeader("Content-Type", "application/json");
+    int httpCode = http.POST(jsonBody);
+    http.end();
+
+    if (httpCode == 200) {
+        Serial.println("Prompt submitted");
+        return true;
+    } else if (httpCode < 0) {
+        Serial.println("submitPrompt(): Connection to server failed");
+    }
+    return false;
 }
