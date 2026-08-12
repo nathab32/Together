@@ -1,25 +1,18 @@
 #include <AudioTools.h>
 #include "Audio.h"
 #include "HTTP.h"
-
-#include <OneButton.h>
+#include "UI.h"
 
 #include <WiFi.h>
-#include "ArduinoMqttClient.h"
+#include "time.h"
 #include <WiFiManager.h>
 
 #include <Preferences.h>
 
 #include <ArduinoJson.h>
 
-WiFiClient espClient;
-
 Audio audio;
 HTTP http;
-
-OneButton L(0);
-OneButton C(2);
-OneButton R(4);
 
 bool recording = false;
 bool toggleRecordingRequested = false;
@@ -30,6 +23,8 @@ bool toggleTone = false;
 bool receiving = false;
 bool toggleReceiveRequested = false;
 bool isPlaying = false;
+
+UI ui;
 struct Credentials {
   String user;
   String pass;
@@ -48,38 +43,28 @@ void startRecording() {
 
 void stopRecording() {
   if (!recording) return;
-  // if (client.beginMessage("esp32/audio/control", false)) {
-  //   client.print("STOP_RECORDING");
-  //   client.endMessage();
-  //   Serial.println("Recording stopped and published");
-  // } else {
-  //   Serial.println("Recording stop failed");
-  // }
+
   audio.endUpload();
   recording = false;
   Serial.println("Upload finished");
 }
 
-void callback_L() {
-  toggleRecordingRequested = true;
-}
-
-void callback_C() {
-  toggleTone = true;
-}
-
-void callback_R() {
-  toggleReceiveRequested = true;
-}
-
 
 /////////// WiFiManager  ///////////
 WiFiManagerParameter togetherUser("Username", "Username", "", 20);
-WiFiManagerParameter togetherPass("Password", "Password", "", 20);
+WiFiManagerParameter togetherPass("Password", "Password", "", 20, "type=\"password\"");
 WiFiManagerParameter togetherServer("Server", "Server", "", 20);
-WiFiManagerParameter togetherInvite("Invite_Code", "Invite Code", "2c41acc5", 8);
+WiFiManagerParameter togetherInvite("Invite_Code", "Invite Code", "", 8, "type=\"password\"");
+WiFiManagerParameter promptParameter("Prompt", "Prompt", "", 64);
 
 WiFiManager wm;
+
+bool portalRunning = false;
+bool stopPortal = false;
+void L_interrupt()
+{
+  stopPortal = true;
+}
 
 bool shouldSaveConfig = false;
 
@@ -132,17 +117,17 @@ void saveParams(){
   http.updateCreds();
 }
 
-////////////////////////// SETUP //////////////////////////
-void setup() {
-  delay(100);
-  Serial.begin(115200);
-  while(!Serial);
-  Serial.println("Program Start");
+/////////////////////// HELPER FUNCTIONS ///////////////////
+void initializeAudio() {
+  audio.beginLogger();
+  if (!audio.beginSineGenerator()) Serial.println("beginSine failed");
+  if (!audio.beginMic()) Serial.println("beginMic failed");
+  if (!audio.beginAmp()) Serial.println("beginAmp failed");
+  audio.ampOn();
+  audio.setSpeakerVolume(0.3);
+}
 
-  L.attachClick(callback_L);
-  C.attachClick(callback_C);
-  R.attachClick(callback_R);
-
+void initializeCredentials() {
   Preferences preferences;
   preferences.begin("TogetherCreds", true);
   creds.user = preferences.getString("username");
@@ -150,7 +135,10 @@ void setup() {
   creds.server = preferences.getString("server");
   creds.invite = preferences.getString("invite");
   preferences.end();
+}
 
+//runs autoconnect at end
+void initializeWiFiManager() {
   // wm.resetSettings(); //remove saved wifis for testing
 
   wm.setAPStaticIPConfig(IPAddress(142, 250, 186, 131), IPAddress(142, 250, 186, 0), IPAddress(255, 255, 255, 0));
@@ -160,47 +148,150 @@ void setup() {
   wm.addParameter(&togetherPass);
   wm.addParameter(&togetherServer);
   wm.addParameter(&togetherInvite);
+  wm.addParameter(&promptParameter);
 
   wm.setSaveParamsCallback(saveParamsCallback);
   wm.setParamsPage(true);
-
-  // wm.startConfigPortal("Together");
+  wm.setConfigPortalTimeout(180);
   wm.autoConnect("Together");
+}
+
+void testCreds(bool startup) {
+  if (http.testConnection()) {
+    if (startup) ui.infoText("Connected to server");
+    else ui.centerText("Connected to server", u8g2_font_ciircle13_tr, EMPTY, 1, 1000);
+
+    if (!http.testLogin()) {
+      if (!http.registerUser()) {
+        ui.centerText("Credentials incorrect", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+        ui.centerText("Please reconfigure", u8g2_font_ciircle13_tr, EMPTY);
+      } else {
+        ui.centerText("User registered successfully", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+        ui.centerText("Welcome " + creds.user + "!", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+        String prompt = promptParameter.getValue();
+        if (!prompt.isEmpty()) {
+          if (http.submitPrompt(prompt)) {
+            ui.centerText("Prompt submitted!", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+          }
+        }
+      }
+    } else {
+      ui.centerText("Welcome " + creds.user + "!", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+      String prompt = promptParameter.getValue();
+      if (!prompt.isEmpty()) {
+        if (http.submitPrompt(prompt)) {
+          ui.centerText("Prompt submitted!", u8g2_font_ciircle13_tr, EMPTY, 1, 2000);
+        }
+      }
+    }
+  } else {
+    ui.centerText("DC from server");
+  }
+}
+
+////////////////////////// SETUP //////////////////////////
+void setup() {
+  // delay(100);
+  Serial.begin(115200);
+  while(!Serial);
+  Serial.println("Program Start");
+
+  
+  ui.begin();
+  ui.info();
+  ui.mainMenuItems = {
+    {"Together", [&]()
+      {
+        JsonDocument doc = http.fetchTodayPrompt();
+        ui.together(doc["date"], doc["prompt"]);
+
+      }},
+    {"Volume", [&]() {
+
+      }},
+    {"Tuner", [&]() {
+
+      }},
+    {"Lights", [&]() {
+
+      }},
+    {"Message", [&]() {
+
+      }},
+    {"Configure", [&]() {
+        if (portalRunning) {
+          if (wm.getConfigPortalActive()) {
+            wm.process();
+          } else {
+            portalRunning = false;
+            detachInterrupt(L_PIN);
+            if (shouldSaveParams) {
+              saveParams();
+              testCreds(false);
+            }
+            ui.mainMenu();
+          }
+        } else {
+          ui.configure();
+          attachInterrupt(L_PIN, L_interrupt, FALLING);
+          wm.setConfigPortalBlocking(false);
+          wm.startConfigPortal("Together");
+          portalRunning = true;
+        }
+
+        if (stopPortal) {
+          stopPortal = false;
+          portalRunning = false;
+          detachInterrupt(L_PIN);
+          wm.stopConfigPortal();
+          if (shouldSaveParams) {
+            saveParams();
+            testCreds(false);
+          }
+          ui.mainMenu();
+        }
+      }
+    }
+  };
+
+  ui.togetherItems = {
+    {"Get Recordings", [&]() {
+      http.fetchFileList();
+    }}
+  };
+
+  ui.togetherMenuItems = {
+
+  };
+
+  // initialize audio after Serial is ready
+  initializeAudio();
+
+  initializeCredentials();
+
+  initializeWiFiManager();
 
   if(shouldSaveParams){
     saveParams();
   }
-  http.updateCreds();
-  
-  if(!http.testLogin()){
-    http.registerUser();
-  }
-  
+  http.updateCreds(); //load creds into http
 
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print(".");
-    delay(500);
-  }
+  testCreds(true); //tests creds and submits prompt if successful
+  
 
   Serial.println("WiFi connected: ");
   Serial.println(WiFi.localIP());
 
-
-  // initialize audio after Serial is ready
-  audio.beginLogger();
-  if (!audio.beginSineGenerator()) Serial.println("beginSine failed");
-  if (!audio.beginMic()) Serial.println("beginMic failed");
-  if (!audio.beginAmp()) Serial.println("beginAmp failed");
-  audio.ampOn();
-  audio.setSpeakerVolume(0.3);
+  ui.info();
+  ui.infoText("C to continue...");
+  ui.waitForInput();
+  ui.mainMenu();
 
 }
 
 void loop() {
-  L.tick();
-  C.tick();
-  R.tick();
+  
+  ui.update();
 
   if (toggleRecordingRequested) {
     toggleRecordingRequested = false;
@@ -255,130 +346,3 @@ void loop() {
   }
 
 }
-
-
-// #include "AudioTools.h"
-// #include "Audio.h"
-
-// AudioInfo info(44100, 1, 32);
-// I2SStream i2sStream; // Access I2S as stream
-// CsvOutput<int16_t> csvOutput(Serial);
-// FormatConverterStream formatConverter(csvOutput);
-// StreamCopy copier(formatConverter, i2sStream); // copy i2sStream to csvOutput
-
-// // Arduino Setup
-// void setup(void) {
-//     Serial.begin(115200);
-//     AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);
-    
-//     auto cfg = i2sStream.defaultConfig(RX_MODE);
-//     cfg.copyFrom(info);
-//     // cfg.i2s_format = I2S_STD_FORMAT; // or try with I2S_LSB_FORMAT
-//     cfg.signal_type = PDM;
-//     // cfg.is_master = true;
-//     // cfg.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;
-//     // this module nees a master clock if the ESP32 is master
-//     cfg.pin_bck = -1;
-//     cfg.pin_ws = 19;
-//     cfg.pin_data = 18;
-//     // cfg.use_apll = false;  // try with yes
-//     i2sStream.begin(cfg);
-
-//     formatConverter.begin(info, AudioInfo(info.sample_rate, 1, 16));
-//     // make sure that we have the correct channels set up
-//     csvOutput.setDelimiter(">sample:");
-//     csvOutput.begin(AudioInfo(info.sample_rate,1,16));
-
-// }
-
-// // Arduino loop - copy data
-// void loop() {
-//   copier.copy();
-// }
-
-
-
-// #include "AudioTools.h"
-// #include "AudioTools/Communication/AudioHttp.h"
-
-// //AudioEncodedServer server(new WAVEncoder(),"ssid","password");  
-// AudioWAVServer server(SSID,PASS); // the same a above
-
-// I2SStream i2sStream;    // Access I2S as stream
-// VolumeStream vol(i2sStream);
-// // ConverterFillLeftAndRight<int16_t> filler(LeftIsEmpty); // fill both channels - or change to RightIsEmpty
-
-// void setup(){
-//   Serial.begin(115200);
-//   AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);
-
-//   // start i2s input with default configuration
-//   Serial.println("starting I2S...");
-//   auto config = i2sStream.defaultConfig(RX_MODE);
-//   config.sample_rate = 22050;
-//   config.channels = 1;
-//   config.bits_per_sample = 16;
-//   config.signal_type = PDM;
-//   config.pin_bck = -1;
-//   config.pin_data = 18;
-//   config.pin_ws = 19;
-//   i2sStream.begin(config);
-//   Serial.println("PDM started");
-
-//   auto vcfg = vol.defaultConfig();
-//   vcfg.allow_boost = true;
-//   vcfg.sample_rate = config.sample_rate;
-//   vcfg.channels = config.channels;
-//   vcfg.bits_per_sample = config.bits_per_sample;
-//   vol.begin(vcfg);
-
-//   vol.setVolume(10);
-//   // start data sink
-//   server.begin(vol, config);
-// }
-
-// // Arduino loop  
-// void loop() {
-//   // Handle new connections
-//   server.copy();  
-// }
-
-// #include "AudioTools.h"
-// #include "AudioTools/AudioCodecs/CodecFLAC.h"
-// #include "AudioTools/Communication/AudioHttp.h"
-// #include "Audio.h"
-
-// const char* ssid = SSID;
-// const char* pwd = PASS;
-// URLStream url(ssid, pwd);
-// FLACDecoder dec;
-// I2SStream i2s;
-
-
-// WORKING AUDIO PLAYBACK (INCREASE BUFFER SIZE)
-// void setup() {
-//   Serial.begin(115200);
-//   AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);  
-
-//   auto config_amp = i2s.defaultConfig(TX_MODE);
-//   config_amp.sample_rate = 44100;
-//   config_amp.bits_per_sample = 16;
-//   config_amp.i2s_format = I2S_STD_FORMAT;
-//   config_amp.buffer_size = 1024;
-//   config_amp.buffer_count = 8;
-//   config_amp.channel_format = I2S_CHANNEL_FMT_ALL_LEFT; // For mono, use left channel
-//   config_amp.port_no = 1;
-//   config_amp.pin_ws = MAX_LRC;
-//   config_amp.pin_bck = MAX_BCLK;
-//   config_amp.pin_data = MAX_DIN;
-//   i2s.begin(config_amp);
-
-//   url.begin("https://github.com/ietf-wg-cellar/flac-test-files/raw/refs/heads/main/subset/01%20-%20blocksize%204096.flac");
-//   dec.setInput(url);
-//   dec.setOutput(i2s);
-//   dec.begin();
-// }
-
-// void loop() {
-//   dec.copy();
-// }
