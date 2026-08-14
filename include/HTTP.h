@@ -2,7 +2,7 @@
 #define HTTP_H
 
 #include <Arduino.h>
-// #include <WiFiClient.h>
+#include "Models.h"
 #include <ArduinoJson.h>
 #include <vector>
 #include <base64.h>
@@ -15,14 +15,9 @@ class HTTP{
 private:
     HTTPClient http;
 
-    struct Credentials {
-        String user;
-        String pass;
-        String server;
-        String invite;
-    };
-
     Credentials creds;
+
+    
 
 public:
     void updateCreds();
@@ -30,7 +25,8 @@ public:
     bool registerUser();
     bool testLogin();
     String getAuthHeader();
-    std::vector<String> fetchFileList();
+    std::vector<Recording> fetchRecordings(const char* date);
+    std::vector<Recording> fetchTodayRecordings();
     JsonDocument fetchTodayPrompt();
     bool submitPrompt(String prompt);
 };

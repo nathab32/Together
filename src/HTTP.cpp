@@ -100,8 +100,9 @@ String HTTP::getAuthHeader(){
     return "Authorization: Basic " + base64::encode(creds.user + ":" + creds.pass);
 }
 
-std::vector<String> HTTP::fetchFileList(){
-    std::vector<String> fileList;
+//Need to fix
+std::vector<Recording> HTTP::fetchRecordings(const char* date) {
+    std::vector<Recording> fileList;
     http.begin(creds.server.c_str(), HTTP_PORT, "/list_recordings");
 
     String jsonResponse = "{}";
@@ -131,9 +132,43 @@ std::vector<String> HTTP::fetchFileList(){
 
     JsonArray arr = doc.as<JsonArray>();
     for (JsonString name : arr) {
-        fileList.push_back(name.c_str());
+        // fileList.push_back(name.c_str());
     }
     return fileList;
+}
+
+std::vector<Recording> HTTP::fetchTodayRecordings() {
+    std::vector<Recording> recordings;
+    if (!http.begin(creds.server.c_str(), HTTP_PORT, "/list_today_recordings")){
+        Serial.println("submitPrompt(): http initialization failed");
+        return recordings;
+    }
+
+    int httpCode = http.GET();
+    
+    if (httpCode == 200) {
+        String payload = http.getString();
+        // Serial.println(payload);
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, payload);
+        if (error) {
+            Serial.print("fetchTodayRecordings: ");
+            Serial.println(error.c_str());
+            return recordings;
+        }
+        JsonArray arr = doc.as<JsonArray>();
+
+        for (JsonObject obj : arr) {
+            Recording rec;
+            rec.username = obj["username"].as<String>();
+            rec.timestamp = obj["timestamp"].as<long>();
+            rec.length = obj["duration"].as<int>();
+            
+            recordings.push_back(rec);
+        }
+    }
+    http.end();
+    return recordings;
 }
 
 JsonDocument HTTP::fetchTodayPrompt()
