@@ -2,6 +2,8 @@
 #define UI_H
 
 #include <Arduino.h>
+#include "Models.h"
+#include "Audio.h"
 #include <functional>
 #include <U8g2lib.h>
 #include <RotaryEncoder.h>
@@ -24,6 +26,7 @@ enum Screen
     MAIN_MENU,
     TOGETHER,
     TOGETHER_MENU,
+    RECORDING,
     VOLUME,
     TUNER,
     LIGHTS,
@@ -33,9 +36,16 @@ enum Screen
 
 typedef std::function<void()> MenuCallback;
 struct MenuItem {
-        String name;
-        MenuCallback onSelect;
-    };
+    String name;
+    MenuCallback onSelect;
+};
+
+struct TogetherMenuItem {
+    String username;
+    MenuCallback onSelect;
+    String time;
+    int length;
+};
 
 class UI {
 
@@ -48,17 +58,32 @@ private:
 
     U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
 
+    Audio *_audio;
+
     Screen currentScreen = MAIN_MENU;
     Screen oldScreen = EMPTY;
 
+    String date;
+    String prompt;
+
     void drawHollowRBox(int x, int y, int w, int h, int r);
     
-    void drawGeneralMenu(std::vector<MenuItem> list, int selectedIndex);
+    void drawGeneralMenu(const std::vector<MenuItem>& list, int selectedIndex);
+    void drawTogetherMenuItem(bool selected, int yPosition, const char* username, const char* time, int length);
+    void drawTogetherMenu(int selectedIndex);
     int currentIndex = 0;
+
+    void updateRecording();
+    bool recordingPaused = true;
+    unsigned long startTime;
+    unsigned long lastRecordingTime = 0;
+    unsigned long recordingTime = 0;
 
     void handleInfoInput();
     void handleMainMenuInput();
     void handleTogetherInput();
+    void handleTogetherMenuInput();
+    void handleRecordingInput();
     void handleVolumeInput();
     void handleTunerInput();
     void handleLightsInput();
@@ -66,7 +91,7 @@ private:
 
 public:
     UI();
-    bool begin();
+    bool begin(Audio* audioPtr);
     void info();
     void infoText(const char *text);
     void waitForInput();
@@ -76,12 +101,15 @@ public:
     void together(String date, String prompt);
     void togetherMenu();
 
+    void recording();
+
     void configure();
     void update();
 
     std::vector<MenuItem> mainMenuItems;
     std::vector<MenuItem> togetherItems;
-    std::vector<MenuItem> togetherMenuItems;
+    std::vector<TogetherMenuItem> togetherMenuItems;
+    MenuItem recordingsItems[2];
 };
 
 #endif //UI_H

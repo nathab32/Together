@@ -17,7 +17,8 @@ void UI::drawHollowRBox(int x, int y, int w, int h, int r){
     u8g2.drawRBox(x + 1, y + 1, w - 2, h - 2, r - 1);
 }
 
-void UI::drawGeneralMenu(std::vector<MenuItem> list, int selectedIndex){
+//can write helper function to simplify
+void UI::drawGeneralMenu(const std::vector<MenuItem>& list, int selectedIndex){
     if(selectedIndex > list.size() - 1 || selectedIndex < 0) {
         Serial.println("drawGeneralMenu: Index not in list");
         return;
@@ -63,6 +64,90 @@ void UI::drawGeneralMenu(std::vector<MenuItem> list, int selectedIndex){
     u8g2.sendBuffer();
 }
 
+void UI::drawTogetherMenuItem(bool selected, int yPosition, const char* username, const char* time, int length) {
+    if (selected) {
+        u8g2.setDrawColor(1);
+        u8g2.drawRBox(0, yPosition, 128, 20, 4);
+        u8g2.setDrawColor(0);
+    } else {
+        drawHollowRBox(0, yPosition, 128, 20, 4);
+        u8g2.setDrawColor(1);
+    }
+    // u8g2.setFont(u8g2_font_ciircle13_tr);
+    u8g2.setFont(u8g2_font_6x13_tf);
+    u8g2.drawUTF8(4, yPosition + 14, username);
+    
+    u8g2.drawUTF8(70, yPosition + (20 + u8g2.getAscent()) / 2, time);
+    u8g2.drawUTF8(108, yPosition + (20 + u8g2.getAscent()) / 2, (length != 0) ? (String(length) + "s").c_str() : (""));
+}
+
+void UI::drawTogetherMenu(int selectedIndex) {
+    u8g2.clearBuffer();
+    if (selectedIndex > togetherMenuItems.size() - 1 || selectedIndex < 0) {
+        Serial.println("drawTogethermenu: Index not in list");
+        return;
+    }
+    
+    int yPositions[] = {0, 22, 42};
+
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_ciircle13_tr);
+
+    if(togetherMenuItems.size() < 3){
+        for (int i = 0; i < togetherMenuItems.size(); ++i){
+            if(i == selectedIndex){
+                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), togetherMenuItems[i].length);
+            } else {
+                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), togetherMenuItems[i].length);
+            }
+        }
+    } else {
+        int filledIndex = selectedIndex % 3;
+        int beginningIndex = max(selectedIndex - filledIndex, 0);
+        // Serial.println(filledIndex);
+        // Serial.println(beginningIndex);
+        for (int i = 0; i < min(3, int(togetherMenuItems.size() - beginningIndex)); ++i){
+            if(i == filledIndex){
+                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), togetherMenuItems[i + beginningIndex].length);
+            } else {
+                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), togetherMenuItems[i + beginningIndex].length);
+            }
+        }
+    }
+    // Serial.println("FLAG");
+    u8g2.sendBuffer();
+}
+
+void UI::updateRecording() {
+    // Serial.println("UpdateRecording called");
+    u8g2.setFont(u8g2_font_6x12_t_symbols);
+    int width = u8g2.getUTF8Width("0:00/1:00");
+    int iconX = (u8g2.getWidth() - (width + 14)) / 2;
+
+    u8g2.setDrawColor(0);
+    u8g2.drawBox((u8g2.getWidth() - (width + 14)) / 2, u8g2.getHeight()-14, width + 14, 14);
+
+    u8g2.setDrawColor(1);
+    
+
+    u8g2.setFont(u8g2_font_twelvedings_t_all);
+    if (recordingPaused) {
+        u8g2.drawGlyph(iconX, 64, 68); //play arrow
+    } else {
+        u8g2.drawGlyph(iconX, 64, 69); //pause symbol
+        recordingTime = millis() - startTime;
+    }
+
+    u8g2.setFont(u8g2_font_6x12_t_symbols);
+    long totalSeconds = (lastRecordingTime + recordingTime) / 1000;
+    char timeBuffer[10];
+    sprintf(timeBuffer, "0:%02ld/1:00", totalSeconds);
+    // Serial.println(timeBuffer);
+    u8g2.drawUTF8(iconX + 14, 63, timeBuffer);
+
+    u8g2.sendBuffer();
+}
+
 void UI::handleInfoInput()
 {
     if(lPressed)
@@ -93,14 +178,14 @@ void UI::handleMainMenuInput(){
         {
             currentIndex = mainMenuItems.size() - 1;
             encoder.setPosition(mainMenuItems.size() - 1);
-            delay(15);
+            // delay(15);
             return;
         }
         else if (newIndex < 0)
         {
             currentIndex = 0;
             encoder.setPosition(0);
-            delay(15);
+            // delay(15);
             return;
         }
         else
@@ -144,13 +229,86 @@ void UI::handleTogetherInput(){
     if(cPressed)
     {
         cPressed = false;
-        togetherMenu();
+        togetherItems[0].onSelect();
     }
 
     if(rPressed)
     {
         rPressed = false;
-        togetherMenu();
+        togetherItems[0].onSelect();
+    }
+}
+
+void UI::handleTogetherMenuInput() {
+    int newIndex = encoder.getPosition();
+
+    if(currentIndex != newIndex)
+    {
+        if(newIndex >= (int)togetherMenuItems.size())
+        {
+            currentIndex = togetherMenuItems.size() - 1;
+            encoder.setPosition(togetherMenuItems.size() - 1);
+            // delay(15);
+            return;
+        }
+        else if (newIndex < 0)
+        {
+            currentIndex = 0;
+            encoder.setPosition(0);
+            // delay(15);
+            return;
+        }
+        else
+        {
+            currentIndex = newIndex;
+            drawTogetherMenu(currentIndex);
+        }
+    }
+
+    if(lPressed)
+    {
+        lPressed = false;
+        mainMenu();
+    }
+
+    if(cPressed)
+    {
+        cPressed = false;
+        togetherMenuItems[currentIndex].onSelect();
+    }
+
+    if(rPressed)
+    {
+        rPressed = false;
+        togetherMenuItems[currentIndex].onSelect();
+    }
+}
+
+void UI::handleRecordingInput() {
+    if(lPressed)
+    {
+        lPressed = false;
+        togetherItems[0].onSelect();
+        // Serial.println("Back to togetherMenu");
+    }
+
+    if(cPressed)
+    {
+        cPressed = false;
+        recordingPaused = !recordingPaused;
+        if (!recordingPaused) { //if switch from paused to playing
+            startTime = millis();
+            lastRecordingTime += recordingTime;
+            recordingTime = 0;
+        }
+        recordingsItems[0].onSelect();
+    }
+
+    if(rPressed)
+    {
+        rPressed = false;
+        recordingPaused = true;
+        recordingsItems[1].onSelect();
     }
 }
 
@@ -228,8 +386,9 @@ void UI::handleConfigureInput(){
 }
 
 ///////////PUBLIC FUNCTIONS////////////////////////
-bool UI::begin(){
+bool UI::begin(Audio* audioPtr){
     u8g2.begin();
+    _audio = audioPtr;
     info();
     return true;
 }
@@ -263,7 +422,7 @@ void UI::infoText(const char *text)
     u8g2.setDrawColor(0);
     u8g2.drawBox(0, 64, 128, 13);
     u8g2.setDrawColor(1);
-    u8g2.setFont(u8g2_font_6x13_tf);
+    u8g2.setFont(u8g2_font_6x12_tf);
 
     u8g2.drawUTF8((u8g2.getDisplayWidth() - u8g2.getUTF8Width(text)) / 2, 61, text);
     u8g2.sendBuffer();
@@ -388,6 +547,9 @@ void UI::together(String date, String prompt) {
     currentScreen = TOGETHER;
     oldScreen = currentScreen;
 
+    this->date = date;
+    this->prompt = prompt;
+    
     centerText(prompt.c_str(), u8g2_font_6x12_tr, EMPTY, 0, 1);
 
     u8g2.setDrawColor(1);
@@ -401,8 +563,34 @@ void UI::together(String date, String prompt) {
 void UI::togetherMenu() {
     currentScreen = TOGETHER_MENU;
     oldScreen = currentScreen;
+    currentIndex = 0;
+    encoder.setPosition(0);
+    
+    drawTogetherMenu(currentIndex);
+}
 
+void UI::recording() {
+    currentScreen = RECORDING;
+    oldScreen = currentScreen;
+    lastRecordingTime = 0;
+    recordingTime = 0;
+    recordingPaused = true;
 
+    centerText(prompt.c_str(), u8g2_font_6x12_t_symbols, EMPTY, 0, 1);
+    u8g2.setDrawColor(1);
+    u8g2.setFont(u8g2_font_ciircle13_tr);
+    u8g2.drawUTF8((u8g2.getDisplayWidth()-u8g2.getUTF8Width(date.c_str()))/2, u8g2.getAscent(), date.c_str());
+
+    u8g2.setFont(u8g2_font_6x12_t_symbols);
+    int width = u8g2.getUTF8Width("0:00/1:00");
+    // Serial.println(width);
+    u8g2.drawUTF8((u8g2.getWidth() - (width)) / 2 + 7, 63, "0:00/1:00");
+
+    u8g2.setFont(u8g2_font_twelvedings_t_all);
+    u8g2.drawGlyph(0, 64, 117); //back arrow
+    u8g2.drawGlyph((u8g2.getWidth() - (width + 14)) / 2, 64, 68); //play arrow
+    u8g2.drawGlyph(u8g2.getWidth() - 14, 64, 115); //save
+    u8g2.sendBuffer();
 }
 
 void UI::configure()
@@ -455,6 +643,13 @@ void UI::update(){
         break;
     case TOGETHER:
         handleTogetherInput();
+        break;
+    case TOGETHER_MENU:
+        handleTogetherMenuInput();
+        break;
+    case RECORDING:
+        handleRecordingInput();
+        if (currentScreen == RECORDING) updateRecording();
         break;
     case VOLUME:
         handleVolumeInput();
