@@ -162,7 +162,7 @@ std::vector<Recording> HTTP::fetchTodayRecordings() {
             Recording rec;
             rec.username = obj["username"].as<String>();
             rec.timestamp = obj["timestamp"].as<long>();
-            rec.length = obj["duration"].as<int>();
+            rec.length = obj["duration"].as<unsigned long>();
             
             recordings.push_back(rec);
         }
