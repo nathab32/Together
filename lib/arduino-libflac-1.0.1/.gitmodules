@@ -1,3 +1,0 @@
-[submodule "original/flac"]
-	path = original/flac
-	url = https://github.com/xiph/flac.git
