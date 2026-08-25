@@ -4,7 +4,7 @@
 struct Recording {
     String username;
     time_t timestamp;
-    int length;
+    unsigned long length;
 };
 
 struct Credentials {
