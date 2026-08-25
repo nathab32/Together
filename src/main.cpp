@@ -23,9 +23,10 @@ bool recordingPaused = true;
 bool toneOn = false;
 bool toggleTone = false;
 
-bool receiving = false;
-bool toggleReceiveRequested = false;
-bool isPlaying = false;
+// bool receiving = false;
+// bool toggleReceiveRequested = false;
+// bool isPlaying = false;
+bool playingPaused = true;
 
 UI ui;
 
@@ -36,28 +37,6 @@ const char *ntpServer = "time.nist.gov";
 long gmtOffset_sec = -28800;
 int daylightOffset_sec = 3600;
 
-void startPauseRecording() {
-  if (recording) {
-    recordingPaused = !recordingPaused;
-  } else {
-    if (audio.beginUpload(creds.server.c_str(), 8000, "/upload_audio", creds.user, creds.pass)){
-      recording = true;
-      recordingPaused = false;
-      Serial.println("Uploading audio via HTTP POST");
-    }
-  }
-  
-}
-
-void stopRecording() {
-  if (!recording) return;
-
-  audio.endUpload();
-  recording = false;
-  recordingPaused = true;
-  Serial.println("Upload finished");
-  ui.centerText("Together Uploaded!", u8g2_font_ciircle13_tr, EMPTY, 0);
-}
 
 
 /////////// WiFiManager  ///////////
@@ -147,11 +126,11 @@ void saveParams(){
 /////////////////////// HELPER FUNCTIONS ///////////////////
 void initializeAudio() {
   audio.beginLogger();
-  if (!audio.beginSineGenerator()) Serial.println("beginSine failed");
+  // if (!audio.beginSineGenerator()) Serial.println("beginSine failed");
   if (!audio.beginMic()) Serial.println("beginMic failed");
   if (!audio.beginAmp()) Serial.println("beginAmp failed");
   audio.ampOn();
-  audio.setSpeakerVolume(0.3);
+  audio.setSpeakerVolume(0.75);
 }
 
 void initializeCredentials() {
@@ -209,7 +188,7 @@ void initializeTime() {
   Serial.println(daylightOffset_sec);
 
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  Serial.println(getFormattedDay());
+  // Serial.println(getFormattedDay());
 
 }
 
@@ -256,32 +235,115 @@ void fillTogetherMenuItems() {
   std::vector<Recording> recordings = http.fetchTodayRecordings();
 
   ui.togetherMenuItems.resize(1);
+  int i = 1;
   for (const Recording& rec : recordings) {
     String fileName = "audio_" + rec.username + "_" + String(rec.timestamp) + ".wav";
     TogetherMenuItem item;
     item.username = rec.username;
-    item.onSelect = [&]() {
-      if (audio.beginURL_Stream(("http://" + creds.server + ":8000/" + fileName).c_str(), creds.user, creds.pass)) {
-        Serial.println("Reading from URL now");
-        isPlaying = true;
-      }
-    };
+    
     char timeBuffer[6];
     epochToLocalTime(rec.timestamp, timeBuffer, sizeof(timeBuffer));
     item.time = timeBuffer;
+
     item.length = rec.length;
+    
+    item.onSelect = [&, item, fileName]() {
+      audio.endURL();
+      // if (audio.beginURL_Stream(("http://" + creds.server + ":8000/" + fileName).c_str(), creds.user, creds.pass)) {
+      //   Serial.println("Download began");
+      //   isPlaying = true;
+      //   playingPaused = true;
+      // }
+      audio.initializeURL(("http://" + creds.server + ":8000/" + fileName), creds.user, creds.pass);
+      // isPlaying = true;
+      playingPaused = true;
+      ui.playback(item.username.c_str(), item.length);
+    };
     ui.togetherMenuItems.push_back(item);
+    ++i;
   }
+}
+
+TaskHandle_t AudioTaskHandle = NULL;
+void audioTask(void *pvParameters) {
+  while (true) {
+    if (recording && !recordingPaused) {
+      // Serial.println(audio.uploadMic());
+      audio.uploadMic();
+     
+    } else {
+      vTaskDelay(pdMS_TO_TICKS(100));
+    }
+  }
+}
+
+TaskHandle_t UiTaskHandle = NULL;
+void uiTask(void *pvParameters) {
+  const TickType_t xFrequency = pdMS_TO_TICKS(30);
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
+  while (true) {
+    ui.update();
+
+    if (!playingPaused && !audio.isPlaying()) {
+    Serial.println("Playback completed/stopped, resetting UI.");
+    // isPlaying = false;
+    playingPaused = true;
+    audio.endURL();
+    ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
+
+    xTaskDelayUntil(&xLastWakeTime, xFrequency);
+  }
+
+
+  }
+}
+
+void startPauseRecording() {
+  if (recording) {
+    recordingPaused = !recordingPaused;
+  } else {
+    if (audio.beginUpload(("http://" + creds.server + ":8000/upload_audio").c_str(), creds.user, creds.pass)){
+      recording = true;
+      recordingPaused = false;
+      Serial.println("Uploading audio via HTTP POST");
+    }
+    xTaskCreatePinnedToCore(
+      audioTask,
+      "AudioTask",
+      4096,
+      NULL,
+      3,
+      &AudioTaskHandle,
+      0);
+  }
+  
+}
+
+void stopRecording() {
+  if (!recording) return;
+
+  audio.endUpload();
+  vTaskDelete(AudioTaskHandle);
+  recording = false;
+  recordingPaused = true;
+  Serial.println("Upload finished");
+  ui.centerText("Audio uploaded!", u8g2_font_ciircle13_tr, EMPTY, 0);
+  ui.recording();
 }
 ////////////////////////// SETUP //////////////////////////
 void setup() {
-  // delay(100);
+
   Serial.begin(115200);
   while(!Serial);
   Serial.println("Program Start");
-  
 
-  ui.begin(&audio);
+  WiFi.setSleep(WIFI_PS_NONE);
+  // esp_wifi_set_ps(WIFI_PS_NONE);
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
+
+  ui.begin();
   ui.info();
   ui.mainMenuItems = {
     {"Together", [&]()
@@ -354,23 +416,37 @@ void setup() {
     }, "", 0}
   };
 
-  ui.recordingsItems[0] =
-  {
+  ui.recordingsItems[0] = {
     "StartPauseRecording", [&]()
     {
       startPauseRecording();
     }
   };
 
-  ui.recordingsItems[1] =
-  {
+  ui.recordingsItems[1] = {
     "FinishRecording", [&]()
     {
       stopRecording();
     }
   };
   
+  ui.playbackItems[0] = {
+    "Exit", [&]() {
+      audio.endURL();
+      audio.stopPlayback();
+      playingPaused = true;
+    }
+  };
 
+  ui.playbackItems[1] = {
+    "StartPausePlayback", [&]() {
+      if (!audio.isPlaying()) audio.beginURL(ui.togetherMenuItems[ui.getCurrentIndex()].length);
+      playingPaused = !playingPaused;
+      audio.setPlaybackPaused(playingPaused);
+    }
+  };
+
+  
   // initialize audio after Serial is ready
   initializeAudio();
 
@@ -385,62 +461,76 @@ void setup() {
 
   testCreds(true); //tests creds and submits prompt if successful
   
-
   Serial.println("WiFi connected: ");
   Serial.println(WiFi.localIP());
 
   initializeTime();
+
+  // xTaskCreatePinnedToCore(
+  //     audioTask,
+  //     "AudioTask",
+  //     4096,
+  //     NULL,
+  //     2,
+  //     &AudioTaskHandle,
+  //     0);
+
+  // xTaskCreatePinnedToCore(
+  //     downloadTask,
+  //     "DownloadTask",
+  //     4096,
+  //     NULL,
+  //     2,
+  //     &DownloadTaskHandle,
+  //     0);
 
   ui.info();
   ui.infoText("C to continue...");
   ui.waitForInput();
   ui.mainMenu();
 
+  xTaskCreatePinnedToCore(
+      uiTask,
+      "UiTask",
+      4096,         // Stack size
+      NULL,
+      1,            // Priority (lower than AudioTask so audio never gets starved)
+      &UiTaskHandle,
+      1             // Core 1 (UI & Display)
+  );
 }
 
 void loop() {
-  
-  ui.update();
+  vTaskDelay(pdMS_TO_TICKS(1000));
+  // ui.update();
 
-  // if (toggleRecordingRequested) {
-  //   toggleRecordingRequested = false;
-  //   if (recording) {
-  //     stopRecording();
-  //   } else {
-  //     startRecording();
-  //   }
+  // if (!playingPaused && !audio.isPlaying()) {
+  //   Serial.println("Playback completed/stopped, resetting UI.");
+  //   // isPlaying = false;
+  //   playingPaused = true;
+  //   audio.endURL();
+  //   ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
+  // }
+  // if (toggleTone) {
+  //   toggleTone = false;
+  //   toneOn = !toneOn;
+  // }
+  
+  // if(toneOn){
+  //     audio.copySpeaker();
   // }
 
-  if (recording) {
-    if (!recordingPaused) {
-      Serial.println(audio.uploadMic());
-      // audio.uploadMic();
-    }
-  }
-
-  if (toggleTone) {
-    toggleTone = false;
-    toneOn = !toneOn;
-  }
-  
-  if(toneOn){
-      audio.copySpeaker();
-  }
-  
-  // if (toggleReceiveRequested) {
-
-  //   if(audio.beginURL_Stream(("http://" + creds.server + ":8000/recording_1781924740.wav").c_str(), creds.user, creds.pass)){
-  //     Serial.println("Reading from URL now");
-  //     isPlaying = true;
+  // if (recording && !recordingPaused) {
+  //     // Serial.println(audio.uploadMic());
+  //     audio.uploadMic();
+     
   //   }
-  // }
 
-  if (isPlaying) {
-    if(audio.copyURLStream(20) == 0 && !audio.URL_Available()){
-      Serial.println("Playback finished");
-      audio.endURL();
-      isPlaying = false;
-    }
-  }
-
+  // if (isPlaying && !playingPaused) {
+  //     if(audio.copyURLStream(4) == 0 && !audio.URL_Available()){
+  //       Serial.println("Playback finished");
+  //       isPlaying = false;
+  //       ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
+  //     }
+  //   }
 }
