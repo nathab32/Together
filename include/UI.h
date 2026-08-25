@@ -14,11 +14,11 @@
 #define ENCODER_B 22
 
 #define L_PIN 0
-#define C_PIN 12
+#define C_PIN 16
 #define R_PIN 4
 
-#define I2C_SCL 27
-#define I2C_SDA 26
+#define I2C_SCL 14
+#define I2C_SDA 27
 
 enum Screen
 {
@@ -27,6 +27,7 @@ enum Screen
     TOGETHER,
     TOGETHER_MENU,
     RECORDING,
+    PLAYBACK,
     VOLUME,
     TUNER,
     LIGHTS,
@@ -44,9 +45,10 @@ struct TogetherMenuItem {
     String username;
     MenuCallback onSelect;
     String time;
-    int length;
+    unsigned long length;
 };
 
+const unsigned long MAX_RECORDING_LENGTH = 60000;
 class UI {
 
 private:
@@ -73,17 +75,23 @@ private:
     void drawTogetherMenu(int selectedIndex);
     int currentIndex = 0;
 
+    void drawTimerBar(long totalSeconds, int maxSeconds, bool isPaused);
+
     void updateRecording();
-    bool recordingPaused = true;
+    bool timerPaused = true;
     unsigned long startTime;
-    unsigned long lastRecordingTime = 0;
-    unsigned long recordingTime = 0;
+    unsigned long lastTimer = 0;
+    unsigned long currentTimer = 0;
+
+    void updatePlayback();
+    unsigned long playbackLength;
 
     void handleInfoInput();
     void handleMainMenuInput();
     void handleTogetherInput();
     void handleTogetherMenuInput();
     void handleRecordingInput();
+    void handlePlaybackInput();
     void handleVolumeInput();
     void handleTunerInput();
     void handleLightsInput();
@@ -91,7 +99,7 @@ private:
 
 public:
     UI();
-    bool begin(Audio* audioPtr);
+    bool begin();
     void info();
     void infoText(const char *text);
     void waitForInput();
@@ -102,14 +110,18 @@ public:
     void togetherMenu();
 
     void recording();
+    void playback(const char* user, unsigned long length);
 
     void configure();
     void update();
+
+    int getCurrentIndex();
 
     std::vector<MenuItem> mainMenuItems;
     std::vector<MenuItem> togetherItems;
     std::vector<TogetherMenuItem> togetherMenuItems;
     MenuItem recordingsItems[2];
+    MenuItem playbackItems[2];
 };
 
 #endif //UI_H

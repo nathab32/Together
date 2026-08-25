@@ -96,9 +96,9 @@ void UI::drawTogetherMenu(int selectedIndex) {
     if(togetherMenuItems.size() < 3){
         for (int i = 0; i < togetherMenuItems.size(); ++i){
             if(i == selectedIndex){
-                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), togetherMenuItems[i].length);
+                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), round(togetherMenuItems[i].length / 1000.0));
             } else {
-                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), togetherMenuItems[i].length);
+                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i].username.c_str(), togetherMenuItems[i].time.c_str(), round(togetherMenuItems[i].length / 1000.0));
             }
         }
     } else {
@@ -108,9 +108,9 @@ void UI::drawTogetherMenu(int selectedIndex) {
         // Serial.println(beginningIndex);
         for (int i = 0; i < min(3, int(togetherMenuItems.size() - beginningIndex)); ++i){
             if(i == filledIndex){
-                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), togetherMenuItems[i + beginningIndex].length);
+                drawTogetherMenuItem(true, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), round(togetherMenuItems[i + beginningIndex].length / 1000.0));
             } else {
-                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), togetherMenuItems[i + beginningIndex].length);
+                drawTogetherMenuItem(false, yPositions[i], togetherMenuItems[i + beginningIndex].username.c_str(), togetherMenuItems[i + beginningIndex].time.c_str(), round(togetherMenuItems[i + beginningIndex].length / 1000.0));
             }
         }
     }
@@ -118,32 +118,72 @@ void UI::drawTogetherMenu(int selectedIndex) {
     u8g2.sendBuffer();
 }
 
-void UI::updateRecording() {
-    // Serial.println("UpdateRecording called");
+void formatTimer(long totalSeconds, char* buffer, size_t size, int maxSeconds) {
+    if (totalSeconds > maxSeconds) totalSeconds = maxSeconds;
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+    snprintf(buffer, size, "%d:%02d/%d:%02d", minutes, seconds, maxSeconds / 60, maxSeconds % 60);
+}
+
+void UI::drawTimerBar(long totalSeconds, int maxSeconds, bool isPaused) {
     u8g2.setFont(u8g2_font_6x12_t_symbols);
     int width = u8g2.getUTF8Width("0:00/1:00");
     int iconX = (u8g2.getWidth() - (width + 14)) / 2;
 
     u8g2.setDrawColor(0);
-    u8g2.drawBox((u8g2.getWidth() - (width + 14)) / 2, u8g2.getHeight()-14, width + 14, 14);
+    u8g2.drawBox(iconX - 2, u8g2.getHeight() - 14, width + 16, 14);
 
     u8g2.setDrawColor(1);
-    
-
     u8g2.setFont(u8g2_font_twelvedings_t_all);
-    if (recordingPaused) {
-        u8g2.drawGlyph(iconX, 64, 68); //play arrow
+    
+    if (isPaused) {
+        u8g2.drawGlyph(iconX, 64, 68); // Play icon
     } else {
-        u8g2.drawGlyph(iconX, 64, 69); //pause symbol
-        recordingTime = millis() - startTime;
+        u8g2.drawGlyph(iconX, 64, 69); // Pause icon
     }
 
+    char timeBuffer[16];
+    formatTimer(totalSeconds, timeBuffer, sizeof(timeBuffer), maxSeconds);
+
     u8g2.setFont(u8g2_font_6x12_t_symbols);
-    long totalSeconds = (lastRecordingTime + recordingTime) / 1000;
-    char timeBuffer[10];
-    sprintf(timeBuffer, "0:%02ld/1:00", totalSeconds);
-    // Serial.println(timeBuffer);
     u8g2.drawUTF8(iconX + 14, 63, timeBuffer);
+}
+
+void UI::updateRecording() {
+    // Serial.println("UpdateRecording called");
+
+    if (!timerPaused) {
+        currentTimer = millis() - startTime;
+    }
+    
+    long totalTime = (lastTimer + currentTimer);
+    if (totalTime > MAX_RECORDING_LENGTH) {
+        totalTime = MAX_RECORDING_LENGTH;
+        timerPaused = true;
+        currentTimer = MAX_RECORDING_LENGTH;
+        lastTimer = 0;
+        recordingsItems[0].onSelect();
+    }
+    drawTimerBar(totalTime / 1000, MAX_RECORDING_LENGTH / 1000, timerPaused);
+
+    u8g2.sendBuffer();
+}
+
+void UI::updatePlayback() {
+    if (!timerPaused) {
+        currentTimer = millis() - startTime;
+    }
+    
+    unsigned long totalTime = (lastTimer + currentTimer);
+    
+    if (totalTime > playbackLength + 1000) {
+        totalTime = playbackLength;
+        timerPaused = true;
+        currentTimer = playbackLength;
+        lastTimer = 0;
+        playbackItems[0].onSelect();
+    }
+    drawTimerBar(totalTime / 1000, int(round(playbackLength / 1000.0)), timerPaused);
 
     u8g2.sendBuffer();
 }
@@ -295,11 +335,15 @@ void UI::handleRecordingInput() {
     if(cPressed)
     {
         cPressed = false;
-        recordingPaused = !recordingPaused;
-        if (!recordingPaused) { //if switch from paused to playing
+        if (currentTimer == MAX_RECORDING_LENGTH) {
+            // Serial.println("Max length reached");
+            return;
+        }
+        timerPaused = !timerPaused;
+        if (!timerPaused) { //if switch from paused to playing
             startTime = millis();
-            lastRecordingTime += recordingTime;
-            recordingTime = 0;
+            lastTimer += currentTimer;
+            currentTimer = 0;
         }
         recordingsItems[0].onSelect();
     }
@@ -307,8 +351,36 @@ void UI::handleRecordingInput() {
     if(rPressed)
     {
         rPressed = false;
-        recordingPaused = true;
+        timerPaused = true;
         recordingsItems[1].onSelect();
+    }
+}
+
+void UI::handlePlaybackInput() {
+    if(lPressed)
+    {
+        lPressed = false;
+        playbackItems[0].onSelect();
+        togetherItems[0].onSelect();
+    }
+
+    if(cPressed)
+    {
+        cPressed = false;
+        timerPaused = !timerPaused;
+        if (!timerPaused) { //if switch from paused to playing
+            startTime = millis();
+            lastTimer += currentTimer;
+            currentTimer = 0;
+        }
+        playbackItems[1].onSelect();
+    }
+
+    if(rPressed)
+    {
+        rPressed = false;
+        timerPaused = true;
+        togetherMenuItems[currentIndex].onSelect();
     }
 }
 
@@ -386,9 +458,8 @@ void UI::handleConfigureInput(){
 }
 
 ///////////PUBLIC FUNCTIONS////////////////////////
-bool UI::begin(Audio* audioPtr){
+bool UI::begin(){
     u8g2.begin();
-    _audio = audioPtr;
     info();
     return true;
 }
@@ -529,7 +600,7 @@ bool UI::centerText(String text, const uint8_t *font, Screen newScreen, uint8_t 
     }
 
     u8g2.sendBuffer();
-
+    if(newScreen != EMPTY) currentScreen = newScreen;
     if(time) delay(time);
     return true;
 }
@@ -558,6 +629,12 @@ void UI::together(String date, String prompt) {
     
     u8g2.sendBuffer();
     infoText("C to continue...");
+    
+
+    if (prompt.equals("No prompts available")) {
+        waitForInput();
+        mainMenu();
+    }
 }
 
 void UI::togetherMenu() {
@@ -572,9 +649,9 @@ void UI::togetherMenu() {
 void UI::recording() {
     currentScreen = RECORDING;
     oldScreen = currentScreen;
-    lastRecordingTime = 0;
-    recordingTime = 0;
-    recordingPaused = true;
+    lastTimer = 0;
+    currentTimer = 0;
+    timerPaused = true;
 
     centerText(prompt.c_str(), u8g2_font_6x12_t_symbols, EMPTY, 0, 1);
     u8g2.setDrawColor(1);
@@ -593,6 +670,37 @@ void UI::recording() {
     u8g2.sendBuffer();
 }
 
+void UI::playback(const char* user, unsigned long length) {
+    currentScreen = PLAYBACK;
+    timerPaused = true;
+    lastTimer = 0;
+    currentTimer = 0;
+    playbackLength = (togetherMenuItems[currentIndex].length);
+    // Serial.println(playbackLength);
+    centerText(prompt.c_str(), u8g2_font_6x12_tr, EMPTY, 0, 1);
+
+    u8g2.setDrawColor(1);
+    u8g2.setFont(u8g2_font_ciircle13_tr);
+    u8g2.drawUTF8((u8g2.getDisplayWidth()-u8g2.getUTF8Width(user))/2, u8g2.getAscent(), user);
+
+    u8g2.setFont(u8g2_font_6x12_t_symbols);
+    int width = u8g2.getUTF8Width("0:00/1:00");
+    unsigned int totalSeconds = length / 1000;
+    unsigned int minutes = totalSeconds / 60;
+    unsigned int seconds = totalSeconds % 60;
+
+    char timeBuffer[10];
+    sprintf(timeBuffer, "0:00/%d:%02d", minutes, seconds);
+    u8g2.drawUTF8((u8g2.getDisplayWidth() - width) / 2 + 7, 64, timeBuffer);
+
+    u8g2.setFont(u8g2_font_twelvedings_t_all);
+    u8g2.drawGlyph(0, 64, 117); // back arrow
+    u8g2.drawGlyph((u8g2.getDisplayWidth() - width) / 2 - 7, 64, 68); //play
+    u8g2.drawGlyph(u8g2.getWidth() - 14, 64, 82); //back to beginning
+
+    u8g2.sendBuffer();
+}
+
 void UI::configure()
 {
     currentScreen = CONFIGURE;
@@ -606,32 +714,6 @@ void UI::update(){
     L.tick();
     C.tick();
     R.tick();
-
-    if(oldScreen != currentScreen)
-    {
-    ///////// call corresponding initialization function
-        switch (currentScreen)
-        {
-        case INFO:
-            info();
-            break;
-        case MAIN_MENU:
-            mainMenu();
-            break;
-        case TOGETHER:
-            break;
-        case VOLUME:
-            break;
-        case TUNER:
-            break;
-        case LIGHTS:
-            break;
-        case CONFIGURE:
-            break;
-        default:
-            break;
-        }
-    }
 
     switch (currentScreen)
     {
@@ -651,6 +733,10 @@ void UI::update(){
         handleRecordingInput();
         if (currentScreen == RECORDING) updateRecording();
         break;
+    case PLAYBACK:
+        handlePlaybackInput();
+        if (currentScreen == PLAYBACK && currentTimer < MAX_RECORDING_LENGTH) updatePlayback();
+        break;
     case VOLUME:
         handleVolumeInput();
         break;
@@ -668,3 +754,6 @@ void UI::update(){
     }
 }
 
+int UI::getCurrentIndex() {
+    return currentIndex;
+}
