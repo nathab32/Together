@@ -1,14 +1,15 @@
 #include "Audio.h"
 
 Audio::Audio()
-    : micVolume(nullptr), micCopier(nullptr), 
+    : info(SAMPLE_RATE, 1, BIT_DEPTH), micVolume(nullptr), micCopier(nullptr), 
     speakerVolume(nullptr), speakerCopier(nullptr), 
-    decoder(nullptr),
+    encoder(nullptr),
+    adpcmEncoder(nullptr), wavEncoder(nullptr), uploadCopier(nullptr),
+    decoder(nullptr), adpcmDecoder(nullptr), wavDecoder(nullptr), urlCopier(nullptr),
+    _playbackTaskHandle(nullptr), _isPlayActive(false), _isPlaybackPaused(true),
+    _targetDuration(0),
     sineGenerator(nullptr), sineStream(nullptr)
 {
-    info = AudioInfo(SAMPLE_RATE, 1, BIT_DEPTH);
-    pinMode(MAX_MODE, OUTPUT);
-    ampOff();
 }
 
 Audio::~Audio(){
@@ -18,10 +19,15 @@ Audio::~Audio(){
     if (speakerCopier) { delete speakerCopier; speakerCopier = nullptr; }
     if (speakerVolume) { delete speakerVolume; speakerVolume = nullptr; }
 
+    if (encoder) { delete encoder; encoder = nullptr; }
+
     if (decoder) { delete decoder; decoder = nullptr; }
+    if (wavDecoder) { delete wavDecoder; wavDecoder = nullptr; }
+    if (adpcmDecoder) { delete adpcmDecoder; adpcmDecoder = nullptr; }
 
     if (sineGenerator) { delete sineGenerator; sineGenerator = nullptr; }
     if (sineStream) { delete sineStream; sineStream = nullptr; }
+    if (http) { delete http; http = nullptr; }
 }
 
 void Audio::beginLogger(){
@@ -69,6 +75,7 @@ bool Audio::endMic() {
 }
 
 bool Audio::beginAmp(){
+    pinMode(MAX_MODE, OUTPUT);
     ampOn();
     auto config_amp = amp.defaultConfig(TX_MODE);
     config_amp.copyFrom(info);
@@ -81,11 +88,11 @@ bool Audio::beginAmp(){
     config_amp.pin_bck = MAX_BCLK;
     config_amp.pin_data = MAX_DIN;
     if (!amp.begin(config_amp)) return false;
-
-    
+    // amp.clearNotifyAudioChange();
 
     if (!speakerVolume) speakerVolume = new VolumeStream(amp);
-    if (!speakerCopier) speakerCopier = new StreamCopy(*speakerVolume, *sineStream);
+    // speakerVolume->clearNotifyAudioChange();
+    
     
 
     auto vcfg = speakerVolume->defaultConfig();
@@ -126,12 +133,31 @@ bool Audio::beginUpload(const char *url_str, String user, String pass) {
         return false;
     }
 
-    
+    if (adpcmEncoder) {
+        delete adpcmEncoder;
+        adpcmEncoder = nullptr;
+    }
+
+    if (wavEncoder) {
+        delete wavEncoder;
+        wavEncoder = nullptr;
+    }
+
+    if (encoder) {
+        delete encoder;
+        encoder = nullptr;
+    }
+
+    adpcmEncoder = new ADPCMEncoder(id);
+    wavEncoder = new WAVEncoder(*adpcmEncoder, AudioFormat::DVI_ADPCM);
+    encoder = new EncodedAudioStream(httpRequest, wavEncoder);
+    encoder->begin(AudioInfo(16000, 1, 4));
+
     if (uploadCopier) {
         delete uploadCopier;
         uploadCopier = nullptr;
     }
-    uploadCopier = new StreamCopy(*httpRequest, mic);
+    uploadCopier = new StreamCopy(*encoder, mic);
     Serial.println("beginUpload succeeded");
     return true;
 }
@@ -141,57 +167,79 @@ size_t Audio::uploadMic(){
     return 0;
 }
 
-void Audio::endUpload(){
-    // uploadClient.print("0\r\n\r\n");
-    // uploadClient.flush();
-    // uploadClient.stop();
+bool Audio::endUpload(){
 
-    if (httpRequest != nullptr) {
-        httpRequest->processEnd();
+    int code;
+    if (httpRequest) {
+        code = httpRequest->processEnd();
         delete httpRequest; 
         httpRequest = nullptr;
     }
-    if (uploadCopier != nullptr) {
+
+    if (adpcmEncoder) {
+        delete adpcmEncoder;
+        adpcmEncoder = nullptr;
+    }
+
+    if (wavEncoder) {
+        delete wavEncoder;
+        wavEncoder = nullptr;
+    }
+
+    if (encoder) {
+        delete encoder;
+        encoder = nullptr;
+    }
+
+    if (uploadCopier) {
         delete uploadCopier; 
         uploadCopier = nullptr;
     }
 
+    return true;
     // endMic();
 }
 
 //private
 void Audio::setupDecoder(){
-    if (decoder) {
-        delete decoder;
-        decoder = nullptr;
+    if (!adpcmDecoder) {
+        adpcmDecoder = new ADPCMDecoder(id);
+        Serial.println("new adpcmDecoder created");
     }
-    decoder = new EncodedAudioStream(speakerVolume, new WAVDecoder());
-    decoder->begin();
+    if (!wavDecoder) {
+        wavDecoder = new WAVDecoder(*adpcmDecoder, AudioFormat::DVI_ADPCM);
+        Serial.println("new wavDecoder created");
+    }
+    if (!decoder) {
+        decoder = new EncodedAudioStream(speakerVolume, wavDecoder);
+        Serial.println("new decoder created");
+    }
+    decoder->begin(info);
+    Serial.println("decoder setup");
 }
 
-void Audio::addCredentialsToURL(String user, String pass){
-    String encoded = base64::encode(user + ":" + pass);
-    http.addRequestHeader("Authorization", ("Basic " + encoded).c_str());
-}
 
 bool Audio::initializeURL(String audio_url, String user, String pass) {
+    if (!http) http = new URLStream();
     String encoded = base64::encode(user + ":" + pass);
-    http.addRequestHeader("Authorization", ("Basic " + encoded).c_str());
+    http->addRequestHeader("Authorization", ("Basic " + encoded).c_str());
     _playUrl = audio_url;
     return true;
 }
 
 bool Audio::beginURL(unsigned long duration){
     // beginAmp();
-
-    if(!http.begin(_playUrl.c_str(), "audio/wav")) return false;
-    
     setupDecoder();
+    if (!http) http = new URLStream();
+    if(!http->begin(_playUrl.c_str(), "audio/wav")) return false;
+    
+    
+    
     if (urlCopier) {
         delete urlCopier;
         urlCopier = nullptr;
     }
-    urlCopier = new StreamCopy(*decoder, http);
+    urlCopier = new StreamCopy(*decoder, *http);
     
     startPlaybackTask(duration);
     return true;
@@ -202,7 +250,7 @@ int Audio::copyURLStream(int pages){
 }
 
 bool Audio::URL_Available(){
-    return http.available();
+    return http && http->available();
 }
 
 void Audio::startPlaybackTask(unsigned long duration) {
@@ -249,7 +297,7 @@ void Audio::runPlaybackLoop() {
 
         if (urlCopier && urlCopier->copy() == 0) {
             vTaskDelay(pdMS_TO_TICKS(10));
-            if (urlCopier->copy() == 0 && !http.available()) {
+            if (urlCopier->copy() == 0 && (!http || !http->available())) {
                 Serial.println("Playback connection lost");
             //     // break;
             }
@@ -257,22 +305,41 @@ void Audio::runPlaybackLoop() {
         vTaskDelay(pdMS_TO_TICKS(2));
     }
 
-    http.end();
-    if (decoder) decoder->end();
-    // endAmp();
+    if (http) http->end();
+    
+    if (urlCopier) {
+        delete urlCopier;
+        urlCopier = nullptr;
+    }
+
+    if (adpcmDecoder) {
+        delete adpcmDecoder;
+        adpcmDecoder = nullptr;
+        Serial.println("adpcmDecoder deleted");
+    }
+
+    if (wavDecoder) {
+        delete wavDecoder;
+        wavDecoder = nullptr;
+        Serial.println("wavdecoder deleted");
+    }
+    
+    if (decoder) {
+        delete decoder;
+        decoder = nullptr;
+        Serial.println("decoder deleted");
+    }
     _isPlayActive = false;
     _playbackTaskHandle = nullptr;
     Serial.println("Playback task finished.");
 }
 
 void Audio::stopPlayback() {
-    if (_isPlayActive) {
-        _isPlayActive = false;
-        if (_playbackTaskHandle != NULL) {
-            // Give task a moment to self-terminate, or clean up if needed
-            vTaskDelay(pdMS_TO_TICKS(50));
-            _playbackTaskHandle = NULL;
-        }
+    if (!_playbackTaskHandle) return;    
+
+    _isPlayActive = false;
+    while (_playbackTaskHandle) {
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
@@ -281,6 +348,7 @@ bool Audio::beginSineGenerator(float frequency){
     if(!sineGenerator->begin(info, frequency)) return false;
 
     if(!sineStream) sineStream = new GeneratedSoundStream<int16_t>(*sineGenerator);
+    // if (!speakerCopier) speakerCopier = new StreamCopy(*speakerVolume, *sineStream);
     return sineStream->begin(info);
 }
 

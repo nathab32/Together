@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <AudioTools.h>
 #include "AudioTools/Communication/AudioHttp.h"
+#include "AudioTools/AudioCodecs/CodecWAV.h" 
 #include "AudioTools/AudioCodecs/CodecADPCM.h"
 #include <WiFi.h>
 #include <base64.h>
@@ -34,13 +35,20 @@ private:
     VolumeStream *speakerVolume;
     StreamCopy *speakerCopier;
 
+    AVCodecID id = AV_CODEC_ID_ADPCM_IMA_WAV;
+
     WiFiClient uploadClient;
     HttpRequest *httpRequest = nullptr;
+    EncodedAudioStream *encoder;
+    ADPCMEncoder *adpcmEncoder;
+    WAVEncoder *wavEncoder;
     StreamCopy *uploadCopier = nullptr;
 
     EncodedAudioStream *decoder;
-    URLStream http;
-    // BufferedStream *bufferedStream;
+    ADPCMDecoder *adpcmDecoder;
+    WAVDecoder *wavDecoder;
+    // FormatConverterStream *converter;
+    URLStream *http = nullptr;
     StreamCopy *urlCopier;
 
     TaskHandle_t _playbackTaskHandle = nullptr;
@@ -70,14 +78,14 @@ public:
 
     bool beginUpload(const char *url, String user, String pass);
     size_t uploadMic();
-    void endUpload();
+    bool endUpload();
 
     void addCredentialsToURL(String user, String pass);
     bool initializeURL(String audio_url, String user, String pass);
     bool beginURL(unsigned long duration);
     int copyURLStream(int pages);
     bool URL_Available();
-    void endURL() { http.end(); }
+    void endURL() { if (http) http->end(); }
 
     void startPlaybackTask(unsigned long duration);
     void stopPlayback();
@@ -87,11 +95,10 @@ public:
     bool beginSineGenerator(float frequency);
     bool endSineGenerator();
 
-    // void setMicVolume(double vol) {if (micVolume) micVolume->setVolume(vol); }
     size_t copyMic(int N) { return micCopier ? micCopier->copyN(N) : 0; }
     bool copyMic() { return micCopier ? (micCopier->copy() > 0) : false; }
 
-    void setSpeakerVolume(double vol) {if (speakerVolume) speakerVolume->setVolume(vol); }
+    void setSpeakerVolume(float vol) {if (speakerVolume) speakerVolume->setVolume(vol); }
     bool copySpeaker() { return speakerCopier ? (speakerCopier->copy() > 0) : false; }
 
     void setSineFrequency(float f) { sineGenerator->setFrequency(f); }
