@@ -76,7 +76,7 @@ bool Audio::endMic() {
 
 bool Audio::beginAmp(){
     pinMode(MAX_MODE, OUTPUT);
-    ampOn();
+    ampOff();
     auto config_amp = amp.defaultConfig(TX_MODE);
     config_amp.copyFrom(info);
     config_amp.i2s_format = I2S_STD_FORMAT;
@@ -232,9 +232,9 @@ bool Audio::beginURL(unsigned long duration){
     setupDecoder();
     if (!http) http = new URLStream();
     if(!http->begin(_playUrl.c_str(), "audio/wav")) return false;
-    
-    
-    
+
+    ampOn();
+
     if (urlCopier) {
         delete urlCopier;
         urlCopier = nullptr;
@@ -305,6 +305,7 @@ void Audio::runPlaybackLoop() {
         vTaskDelay(pdMS_TO_TICKS(2));
     }
 
+    ampOff();
     if (http) http->end();
     
     if (urlCopier) {
