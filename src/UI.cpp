@@ -1,5 +1,11 @@
 #include "UI.h"
 
+static UI *encoderUI = nullptr;
+
+IRAM_ATTR void encoderISR() {
+    if (encoderUI) encoderUI->encoderTickFromISR();
+}
+
 UI::UI()
     : encoder(ENCODER_A, ENCODER_B, RotaryEncoder::LatchMode::FOUR3),
     L(L_PIN), C(C_PIN), R(R_PIN),
@@ -188,6 +194,27 @@ void UI::updatePlayback() {
     u8g2.sendBuffer();
 }
 
+bool UI::updateVol() {
+    int newVol = encoder.getPosition();
+    if (newVol > MAX_VOLUME) {
+        encoder.setPosition(MAX_VOLUME);
+        newVol = MAX_VOLUME;
+    } else if (newVol < 0) {
+        encoder.setPosition(0);
+        newVol = 0;
+    }
+    // Serial.printf("newVol:%d\n", newVol);
+    
+    if (newVol != vol) {
+        vol = newVol;
+        // Serial.printf("Vol:%d\n", vol);
+        volumeCallbacks[0].onSelect();
+        muted = false;
+        return true;
+    }
+    return false;
+}
+
 void UI::handleInfoInput()
 {
     if(lPressed)
@@ -238,7 +265,7 @@ void UI::handleMainMenuInput(){
     if(lPressed)
     {
         lPressed = false;
-        currentIndex = 0;
+        // currentIndex = 0;
         info();
         infoText("Press to continue...");
     }
@@ -357,6 +384,8 @@ void UI::handleRecordingInput() {
 }
 
 void UI::handlePlaybackInput() {
+    updateVol();
+
     if(lPressed)
     {
         lPressed = false;
@@ -380,20 +409,30 @@ void UI::handlePlaybackInput() {
     {
         rPressed = false;
         timerPaused = true;
+        playbackItems[0].onSelect();
         togetherMenuItems[currentIndex].onSelect();
     }
 }
 
 void UI::handleVolumeInput(){
+    if (updateVol()) {
+        volume(vol);
+    }
 
     if(lPressed)
     {
         lPressed = false;
+        encoder.setPosition(currentIndex);
+        volumeCallbacks[1].onSelect();
+        mainMenu();
     }
 
     if(cPressed)
     {
         cPressed = false;
+        muted = !muted;
+        volumeCallbacks[0].onSelect();
+        volume(vol);
     }
 
     if(rPressed)
@@ -403,7 +442,7 @@ void UI::handleVolumeInput(){
 }
 
 void UI::handleTunerInput(){
-
+    updateVol();
     if(lPressed)
     {
         lPressed = false;
@@ -460,8 +499,15 @@ void UI::handleConfigureInput(){
 ///////////PUBLIC FUNCTIONS////////////////////////
 bool UI::begin(){
     u8g2.begin();
+    encoderUI = this;
+    attachInterrupt(digitalPinToInterrupt(ENCODER_A), encoderISR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ENCODER_B), encoderISR, CHANGE);
     info();
     return true;
+}
+
+void UI::encoderTickFromISR() {
+    encoder.tick();
 }
 
 void UI::info()
@@ -670,8 +716,10 @@ void UI::recording() {
     u8g2.sendBuffer();
 }
 
-void UI::playback(const char* user, unsigned long length) {
+void UI::playback(const char* user, unsigned long length, unsigned int volume) {
     currentScreen = PLAYBACK;
+    vol = volume;
+    encoder.setPosition(volume);
     timerPaused = true;
     lastTimer = 0;
     currentTimer = 0;
@@ -701,6 +749,67 @@ void UI::playback(const char* user, unsigned long length) {
     u8g2.sendBuffer();
 }
 
+//volume 0-10
+void UI::volume(unsigned int volume) {
+    currentScreen = VOLUME;
+    vol = volume;
+    encoder.setPosition(volume);
+    u8g2.clearBuffer();
+    u8g2.setDrawColor(1);
+
+    u8g2.setFont(u8g2_font_twelvedings_t_all);
+    u8g2.drawGlyph(0, 64, 117);
+
+
+    uint16_t arcX = u8g2.getDisplayWidth() / 2;
+    uint16_t arcY = u8g2.getDisplayHeight() / 2;
+    uint16_t outerRad = u8g2.getDisplayHeight() * 0.5;
+    unsigned int thickness = 5;
+
+    u8g2.drawDisc(arcX, arcY, outerRad);
+
+    u8g2.setDrawColor(0);
+    u8g2.drawDisc(arcX, arcY, outerRad - thickness);
+
+    if (volume < (5.0 / 6 * MAX_VOLUME)) {
+        int end = ((5.0 / 6 * MAX_VOLUME) - volume) / float(MAX_VOLUME) * 191;
+        // Serial.printf("volume: %d, end: %d\n", volume, end);
+        for (int i = 0; i <= thickness; i++) {
+            u8g2.drawArc(arcX, arcY, outerRad - i, 159, 255);
+            u8g2.drawArc(arcX, arcY, outerRad - i, 0, end);
+        }
+    } else {
+        int end = (MAX_VOLUME - volume) / float(MAX_VOLUME) * 191 + 223;
+        // Serial.printf("volume: %d, end: %d\n", volume, end);
+        for (int i = 0; i <= thickness; i++) {
+            u8g2.drawArc(arcX, arcY, outerRad - i, 159, end);
+        }
+    }
+    
+
+    u8g2.setDrawColor(1);
+    // u8g2.setFont(u8g2_font_open_iconic_all_2x_t);
+    // uint16_t glyph = 277;
+    if (volume == 0 || muted) {
+        u8g2.drawXBM(u8g2.getDisplayWidth() / 2 - 16, u8g2.getDisplayHeight() / 2 - 16, mute_width, mute_height, mute_bits);
+    } else if(volume < 4) {
+        // glyph = 279;
+        u8g2.drawXBM(u8g2.getDisplayWidth() / 2 - 16, u8g2.getDisplayHeight() / 2 - 16, vol0_width, vol0_height, vol0_bits);
+    } else if (volume < 7) {
+        // glyph = 278;
+        u8g2.drawXBM(u8g2.getDisplayWidth() / 2 - 16, u8g2.getDisplayHeight() / 2 - 16, vol1_width, vol1_height, vol1_bits);
+    } else {
+        u8g2.drawXBM(u8g2.getDisplayWidth() / 2 - 16, u8g2.getDisplayHeight() / 2 - 16, vol2_width, vol2_height, vol2_bits);
+    }
+    // u8g2.drawGlyph(u8g2.getDisplayWidth() / 2 - 8, u8g2.getDisplayHeight() / 2 + 8, glyph);
+
+    u8g2.sendBuffer();
+}
+
+unsigned int UI::getVolume() {
+    return vol;
+}
+
 void UI::configure()
 {
     currentScreen = CONFIGURE;
@@ -710,7 +819,6 @@ void UI::configure()
 }
 
 void UI::update(){
-    encoder.tick();
     L.tick();
     C.tick();
     R.tick();

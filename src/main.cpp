@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "Models.h"
-#include <AudioTools.h>
 #include "Audio.h"
 #include "HTTP.h"
 #include "UI.h"
@@ -31,7 +30,7 @@ bool playingPaused = true;
 UI ui;
 
 Credentials creds;
-
+unsigned int volume;
 //time variables
 const char *ntpServer = "time.nist.gov";
 long gmtOffset_sec = -28800;
@@ -130,7 +129,12 @@ void initializeAudio() {
   if (!audio.beginMic()) Serial.println("beginMic failed");
   if (!audio.beginAmp()) Serial.println("beginAmp failed");
   audio.ampOn();
-  audio.setSpeakerVolume(0.75);
+
+  // Preferences pref;
+  // pref.begin("Volume");
+  // volume = pref.getUInt("volume", 5);
+  audio.setSpeakerVolume(volume / (float(MAX_VOLUME)));
+  // pref.end();
 }
 
 void initializeCredentials() {
@@ -248,16 +252,10 @@ void fillTogetherMenuItems() {
     item.length = rec.length;
     
     item.onSelect = [&, item, fileName]() {
-      audio.endURL();
-      // if (audio.beginURL_Stream(("http://" + creds.server + ":8000/" + fileName).c_str(), creds.user, creds.pass)) {
-      //   Serial.println("Download began");
-      //   isPlaying = true;
-      //   playingPaused = true;
-      // }
-      audio.initializeURL(("http://" + creds.server + ":8000/" + fileName), creds.user, creds.pass);
-      // isPlaying = true;
+      audio.stopPlayback();
+      audio.initializeURL(("http://" + creds.server + ":8000/" + fileName + "?format=adpcm"), creds.user, creds.pass);
       playingPaused = true;
-      ui.playback(item.username.c_str(), item.length);
+      ui.playback(item.username.c_str(), item.length, volume);
     };
     ui.togetherMenuItems.push_back(item);
     ++i;
@@ -268,7 +266,6 @@ TaskHandle_t AudioTaskHandle = NULL;
 void audioTask(void *pvParameters) {
   while (true) {
     if (recording && !recordingPaused) {
-      // Serial.println(audio.uploadMic());
       audio.uploadMic();
      
     } else {
@@ -286,15 +283,12 @@ void uiTask(void *pvParameters) {
     ui.update();
 
     if (!playingPaused && !audio.isPlaying()) {
-    Serial.println("Playback completed/stopped, resetting UI.");
-    // isPlaying = false;
-    playingPaused = true;
-    audio.endURL();
-    ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
+      Serial.println("Playback completed/stopped, resetting UI.");
+      playingPaused = true;
+      ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
+    }
 
     xTaskDelayUntil(&xLastWakeTime, xFrequency);
-  }
-
 
   }
 }
@@ -339,12 +333,17 @@ void setup() {
   Serial.println("Program Start");
 
   WiFi.setSleep(WIFI_PS_NONE);
-  // esp_wifi_set_ps(WIFI_PS_NONE);
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
 
   ui.begin();
   ui.info();
+
+  Preferences pref;
+  pref.begin("Volume", true);
+  volume = pref.getUInt("volume", 5);
+  pref.end();
+
   ui.mainMenuItems = {
     {"Together", [&]()
       {
@@ -353,7 +352,7 @@ void setup() {
 
       }},
     {"Volume", [&]() {
-
+        ui.volume(volume);
       }},
     {"Tuner", [&]() {
 
@@ -368,7 +367,9 @@ void setup() {
         if (portalRunning) {
           if (wm.getConfigPortalActive()) {
             wm.process();
-          } else {
+          }
+          else
+          {
             portalRunning = false;
             detachInterrupt(L_PIN);
             if (shouldSaveParams) {
@@ -432,8 +433,10 @@ void setup() {
   
   ui.playbackItems[0] = {
     "Exit", [&]() {
-      audio.endURL();
       audio.stopPlayback();
+      volume = ui.getVolume();
+      // Serial.printf("Volume: %d\n", volume);
+      ui.volumeCallbacks[1].onSelect();
       playingPaused = true;
     }
   };
@@ -446,7 +449,25 @@ void setup() {
     }
   };
 
-  
+  ui.volumeCallbacks[0] = {
+    "ChangeVolume", [&]() {
+        if (ui.muted) {
+          audio.setSpeakerVolume(0);
+          return;
+        }
+        audio.setSpeakerVolume(ui.getVolume() / (float(MAX_VOLUME)));
+      }
+  };
+  ui.volumeCallbacks[1] = {
+    "SaveVolume", [&]() {
+      Preferences pref;
+      pref.begin("Volume");
+      pref.putUInt("volume", ui.getVolume());
+      pref.end();
+      volume = ui.getVolume();
+    }
+  };
+
   // initialize audio after Serial is ready
   initializeAudio();
 
@@ -466,24 +487,6 @@ void setup() {
 
   initializeTime();
 
-  // xTaskCreatePinnedToCore(
-  //     audioTask,
-  //     "AudioTask",
-  //     4096,
-  //     NULL,
-  //     2,
-  //     &AudioTaskHandle,
-  //     0);
-
-  // xTaskCreatePinnedToCore(
-  //     downloadTask,
-  //     "DownloadTask",
-  //     4096,
-  //     NULL,
-  //     2,
-  //     &DownloadTaskHandle,
-  //     0);
-
   ui.info();
   ui.infoText("C to continue...");
   ui.waitForInput();
@@ -502,35 +505,4 @@ void setup() {
 
 void loop() {
   vTaskDelay(pdMS_TO_TICKS(1000));
-  // ui.update();
-
-  // if (!playingPaused && !audio.isPlaying()) {
-  //   Serial.println("Playback completed/stopped, resetting UI.");
-  //   // isPlaying = false;
-  //   playingPaused = true;
-  //   audio.endURL();
-  //   ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
-  // }
-  // if (toggleTone) {
-  //   toggleTone = false;
-  //   toneOn = !toneOn;
-  // }
-  
-  // if(toneOn){
-  //     audio.copySpeaker();
-  // }
-
-  // if (recording && !recordingPaused) {
-  //     // Serial.println(audio.uploadMic());
-  //     audio.uploadMic();
-     
-  //   }
-
-  // if (isPlaying && !playingPaused) {
-  //     if(audio.copyURLStream(4) == 0 && !audio.URL_Available()){
-  //       Serial.println("Playback finished");
-  //       isPlaying = false;
-  //       ui.togetherMenuItems[ui.getCurrentIndex()].onSelect();
-  //     }
-  //   }
 }
