@@ -2,7 +2,7 @@
 
 Audio::Audio()
     : info(SAMPLE_RATE, 1, BIT_DEPTH), micVolume(nullptr), micCopier(nullptr), 
-    speakerVolume(nullptr), speakerCopier(nullptr), 
+    speakerVolume(nullptr), toneCopier(nullptr), 
     encoder(nullptr),
     adpcmEncoder(nullptr), wavEncoder(nullptr), uploadCopier(nullptr),
     decoder(nullptr), adpcmDecoder(nullptr), wavDecoder(nullptr), urlCopier(nullptr),
@@ -16,10 +16,11 @@ Audio::~Audio(){
     if (micCopier) { delete micCopier; micCopier = nullptr; }
     if (micVolume) { delete micVolume; micVolume = nullptr; }
 
-    if (speakerCopier) { delete speakerCopier; speakerCopier = nullptr; }
+    if (toneCopier) { delete toneCopier; toneCopier = nullptr; }
     if (speakerVolume) { delete speakerVolume; speakerVolume = nullptr; }
 
     if (encoder) { delete encoder; encoder = nullptr; }
+    if (recordingConverter) { delete recordingConverter; recordingConverter = nullptr; }
 
     if (decoder) { delete decoder; decoder = nullptr; }
     if (wavDecoder) { delete wavDecoder; wavDecoder = nullptr; }
@@ -31,7 +32,7 @@ Audio::~Audio(){
 }
 
 void Audio::beginLogger(){
-    AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Info);
+    AudioToolsLogger.begin(Serial, AudioToolsLogLevel::Warning);
 }
 
 bool Audio::beginMic(){
@@ -81,8 +82,10 @@ bool Audio::beginAmp(){
     config_amp.copyFrom(info);
     config_amp.i2s_format = I2S_STD_FORMAT;
     config_amp.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;  // For mono, use left channel
+    // config_amp.buffer_size = 1024;
+    // config_amp.buffer_count = 12;
     config_amp.buffer_size = 1024;
-    config_amp.buffer_count = 12;
+    config_amp.buffer_count = 4;
     config_amp.port_no = 1;
     config_amp.pin_ws = MAX_LRC;
     config_amp.pin_bck = MAX_BCLK;
@@ -148,16 +151,28 @@ bool Audio::beginUpload(const char *url_str, String user, String pass) {
         encoder = nullptr;
     }
 
+    if (recordingConverter) {
+        delete recordingConverter;
+        recordingConverter = nullptr;
+    }
+
     adpcmEncoder = new ADPCMEncoder(id);
     wavEncoder = new WAVEncoder(*adpcmEncoder, AudioFormat::DVI_ADPCM);
     encoder = new EncodedAudioStream(httpRequest, wavEncoder);
-    encoder->begin(AudioInfo(16000, 1, 4));
+    encoder->begin(AudioInfo(SAMPLE_RATE, 1, 4));
+
+    recordingConverter = new FormatConverterStream(mic);
+    if (!recordingConverter->begin(info, AudioInfo(SAMPLE_RATE, 1, 16))) {
+        delete recordingConverter;
+        recordingConverter = nullptr;
+        return false;
+    }
 
     if (uploadCopier) {
         delete uploadCopier;
         uploadCopier = nullptr;
     }
-    uploadCopier = new StreamCopy(*encoder, mic);
+    uploadCopier = new StreamCopy(*encoder, *recordingConverter);
     Serial.println("beginUpload succeeded");
     return true;
 }
@@ -194,6 +209,11 @@ bool Audio::endUpload(){
     if (uploadCopier) {
         delete uploadCopier; 
         uploadCopier = nullptr;
+    }
+
+    if (recordingConverter) {
+        delete recordingConverter;
+        recordingConverter = nullptr;
     }
 
     return true;
@@ -345,16 +365,36 @@ void Audio::stopPlayback() {
 }
 
 bool Audio::beginSineGenerator(float frequency){
-    if(!sineGenerator) sineGenerator = new SineGenerator<int16_t>();
+    if(!sineGenerator) sineGenerator = new SineGenerator<ToneSample>();
     if(!sineGenerator->begin(info, frequency)) return false;
 
-    if(!sineStream) sineStream = new GeneratedSoundStream<int16_t>(*sineGenerator);
-    // if (!speakerCopier) speakerCopier = new StreamCopy(*speakerVolume, *sineStream);
+    if(!sineStream) sineStream = new GeneratedSoundStream<ToneSample>(*sineGenerator);
+    if (!toneCopier) toneCopier = new StreamCopy(*speakerVolume, *sineStream);
     return sineStream->begin(info);
 }
 
+void Audio::changeFrequency(float frequency) {
+    if (sineGenerator && sineStream) {
+        while(!sineStream->find("0")) {}
+        sineGenerator->setFrequency(frequency);
+    }
+}
+
 bool Audio::endSineGenerator() {
-    sineGenerator->end();
-    sineStream->end();
+    if (toneCopier) {
+      delete toneCopier;
+      toneCopier = nullptr;
+    }
+
+    if (sineStream) {
+        delete sineStream;
+        sineStream = nullptr;
+    }
+
+    if (sineGenerator) {
+        delete sineGenerator;
+        sineGenerator = nullptr;
+    }
+
     return true;
 }

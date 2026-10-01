@@ -6,6 +6,7 @@
 #include "AudioTools/Communication/AudioHttp.h"
 #include "AudioTools/AudioCodecs/CodecWAV.h" 
 #include "AudioTools/AudioCodecs/CodecADPCM.h"
+#include "AudioTools/CoreAudio/AudioStreamsConverter.h"
 #include <WiFi.h>
 #include <base64.h>
 
@@ -17,10 +18,18 @@
 #define MIC_DATA 18
 #define MIC_WS 19
 
-#define SAMPLE_RATE 16000
+#define SAMPLE_RATE 44100
 #define BIT_DEPTH 16
 
 #define BUFFER_SIZE 1024
+
+#if BIT_DEPTH == 16
+using ToneSample = int16_t;
+#elif BIT_DEPTH == 32
+using ToneSample = int32_t;
+#else
+#error "BIT_DEPTH must be 16 or 32 for the tuner tone generator"
+#endif
 
 
 class Audio
@@ -33,7 +42,7 @@ private:
     
     I2SStream amp;
     VolumeStream *speakerVolume;
-    StreamCopy *speakerCopier;
+    StreamCopy *toneCopier;
 
     AVCodecID id = AV_CODEC_ID_ADPCM_IMA_WAV;
 
@@ -42,6 +51,7 @@ private:
     EncodedAudioStream *encoder;
     ADPCMEncoder *adpcmEncoder;
     WAVEncoder *wavEncoder;
+    FormatConverterStream *recordingConverter = nullptr;
     StreamCopy *uploadCopier = nullptr;
 
     EncodedAudioStream *decoder;
@@ -58,8 +68,8 @@ private:
     void runPlaybackLoop();
     unsigned long _targetDuration;
 
-    SineGenerator<int16_t> *sineGenerator;
-    GeneratedSoundStream<int16_t> *sineStream;
+    SineGenerator<ToneSample> *sineGenerator;
+    GeneratedSoundStream<ToneSample> *sineStream;
 
     void setupDecoder();
 
@@ -75,6 +85,7 @@ public:
     bool endAmp();
     void ampOn() { digitalWrite(MAX_MODE, HIGH); }
     void ampOff() { digitalWrite(MAX_MODE, LOW); }
+    void flushAmp() { amp.flush(); }
 
     bool beginUpload(const char *url, String user, String pass);
     size_t uploadMic();
@@ -93,13 +104,14 @@ public:
     void setPlaybackPaused(bool paused) { _isPlaybackPaused = paused; }
 
     bool beginSineGenerator(float frequency);
+    void changeFrequency(float frequency);
     bool endSineGenerator();
 
     size_t copyMic(int N) { return micCopier ? micCopier->copyN(N) : 0; }
     bool copyMic() { return micCopier ? (micCopier->copy() > 0) : false; }
 
     void setSpeakerVolume(float vol) {if (speakerVolume) speakerVolume->setVolume(vol); }
-    bool copySpeaker() { return speakerCopier ? (speakerCopier->copy() > 0) : false; }
+    bool copyTone() { return toneCopier ? (toneCopier->copy() > 0) : false; }
 
     void setSineFrequency(float f) { sineGenerator->setFrequency(f); }
 };

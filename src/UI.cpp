@@ -442,20 +442,91 @@ void UI::handleVolumeInput(){
 }
 
 void UI::handleTunerInput(){
-    updateVol();
+    RotaryEncoder::Direction dir = encoder.getDirection();
+    if (dir != RotaryEncoder::Direction::NOROTATION) {
+        if (toneAdjust_) {
+            if (dir == RotaryEncoder::Direction::CLOCKWISE) {
+                ++semitone_;
+            } else {
+                --semitone_;
+            }
+
+            semitone_ = constrain(semitone_, 4, 8 * 12);
+            int octave = semitone_ / 12;
+            int noteIndex = semitone_ % 12;
+
+            u8g2.setDrawColor(0);
+            u8g2.drawBox(70, u8g2.getDisplayHeight() / 3 - 8, u8g2.getDisplayWidth() - 70, 17);
+            String note = String(noteNames[noteIndex]) + String(octave);
+            u8g2.setDrawColor(1);
+            u8g2.setFont(u8g2_font_ciircle13_tr);
+            u8g2.drawUTF8(70, u8g2.getDisplayHeight() / 3 + 8, note.c_str());
+            
+
+        } else {
+            if (dir == RotaryEncoder::Direction::CLOCKWISE) {
+                ++a_freq_;
+            } else {
+                --a_freq_;
+            }
+            a_freq_ = constrain(a_freq_, 410, 470);
+
+            u8g2.setDrawColor(0);
+            u8g2.drawBox(0, u8g2.getDisplayHeight() / 3 - 8, 70, 17);
+            String freq = String(a_freq_) + "Hz";
+            u8g2.setDrawColor(1);
+            u8g2.setFont(u8g2_font_ciircle13_tr);
+            u8g2.drawUTF8(0, u8g2.getDisplayHeight() / 3 + 8, freq.c_str());
+            
+        }
+
+        tunerCallbacks[2].onSelect();
+        u8g2.sendBuffer();
+    }
+
+
     if(lPressed)
     {
         lPressed = false;
+        tunerCallbacks[0].onSelect();
+        mainMenu();
     }
 
     if(cPressed)
     {
         cPressed = false;
+        tunerCallbacks[1].onSelect();
+        tonePaused_ = !tonePaused_;
+
+        u8g2.setDrawColor(0);
+        u8g2.drawBox(u8g2.getDisplayWidth() / 2 - 7, u8g2.getDisplayHeight() - 14, 14, 14);
+        u8g2.setDrawColor(1);
+        u8g2.setFont(u8g2_font_twelvedings_t_all);
+        
+        if (tonePaused_) {
+            u8g2.drawGlyph(u8g2.getDisplayWidth() / 2 - 7, u8g2.getDisplayHeight(), 68);
+        } else {
+            u8g2.drawGlyph(u8g2.getDisplayWidth() / 2 - 7, u8g2.getDisplayHeight(), 69);
+        }
+        u8g2.sendBuffer();
     }
 
     if(rPressed)
     {
         rPressed = false;
+        toneAdjust_ = !toneAdjust_;
+
+        u8g2.setDrawColor(0);
+        u8g2.drawBox(u8g2.getDisplayWidth() - 14, u8g2.getDisplayHeight() - 14, 14, 14);
+        u8g2.setDrawColor(1);
+
+        if (toneAdjust_) {
+            u8g2.drawXBM(u8g2.getDisplayWidth() - 14, u8g2.getDisplayHeight()-14, note_width, note_height, note_bits);
+        } else {
+            u8g2.setFont(u8g2_font_7x14_tr);
+            u8g2.drawUTF8(u8g2.getDisplayWidth() - 14, u8g2.getDisplayHeight(), "Hz");    
+        }
+        u8g2.sendBuffer();
     }
 }
 
@@ -510,8 +581,7 @@ void UI::encoderTickFromISR() {
     encoder.tick();
 }
 
-void UI::info()
-{
+void UI::info() {
     currentScreen = INFO;
     oldScreen = currentScreen;
     u8g2.clearBuffer();
@@ -724,7 +794,6 @@ void UI::playback(const char* user, unsigned long length, unsigned int volume) {
     lastTimer = 0;
     currentTimer = 0;
     playbackLength = (togetherMenuItems[currentIndex].length);
-    // Serial.println(playbackLength);
     centerText(prompt.c_str(), u8g2_font_6x12_tr, EMPTY, 0, 1);
 
     u8g2.setDrawColor(1);
@@ -808,6 +877,35 @@ void UI::volume(unsigned int volume) {
 
 unsigned int UI::getVolume() {
     return vol;
+}
+
+void UI::tuner(unsigned int a_freq) {
+    currentScreen = TUNER;
+    tonePaused_ = true;
+    toneAdjust_ = true;
+    a_freq_ = a_freq;
+    semitone_ = 56;
+
+    u8g2.clearBuffer();
+    u8g2.setDrawColor(1);
+
+    u8g2.setFont(u8g2_font_twelvedings_t_all);
+    u8g2.drawGlyph(0, 64, 117);
+    u8g2.drawGlyph(u8g2.getDisplayWidth() / 2 - 7, u8g2.getDisplayHeight(), 68);
+    u8g2.drawXBM(u8g2.getDisplayWidth() - 14, u8g2.getDisplayHeight()-14, note_width, note_height, note_bits);
+    
+
+    u8g2.setFont(u8g2_font_ciircle13_tr);
+    String str = String(a_freq) + "Hz";
+    u8g2.drawUTF8(0, u8g2.getDisplayHeight() / 3 + 8, str.c_str());
+
+    u8g2.drawUTF8(70, u8g2.getDisplayHeight() / 3 + 8, "A4");
+    u8g2.sendBuffer();
+}
+
+void UI::lights() {
+    currentScreen = LIGHTS;
+    
 }
 
 void UI::configure()

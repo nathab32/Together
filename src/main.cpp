@@ -17,14 +17,9 @@ HTTP http;
 
 bool recording = false;
 bool recordingPaused = true;
-// bool toggleRecordingRequested = false;
 
 bool toneOn = false;
-bool toggleTone = false;
 
-// bool receiving = false;
-// bool toggleReceiveRequested = false;
-// bool isPlaying = false;
 bool playingPaused = true;
 
 UI ui;
@@ -73,7 +68,7 @@ void saveParamsCallback(){
 void saveParams(){
   Preferences pref;
 
-  pref.begin("TogetherCreds", false);
+  pref.begin("Together", false);
 
   String user = togetherUser.getValue();
   if(!user.equals("")){ 
@@ -99,9 +94,6 @@ void saveParams(){
     creds.invite = invite;
   }
 
-  pref.end();
-
-  pref.begin("time", false);
 
   const char* gmtOffset = gmtOffsetParameter.getValue();
   if(gmtOffset != ""){
@@ -130,16 +122,12 @@ void initializeAudio() {
   if (!audio.beginAmp()) Serial.println("beginAmp failed");
   audio.ampOn();
 
-  // Preferences pref;
-  // pref.begin("Volume");
-  // volume = pref.getUInt("volume", 5);
   audio.setSpeakerVolume(volume / (float(MAX_VOLUME)));
-  // pref.end();
 }
 
 void initializeCredentials() {
   Preferences preferences;
-  preferences.begin("TogetherCreds", true);
+  preferences.begin("Together", true);
   creds.user = preferences.getString("username");
   creds.pass = preferences.getString("password");
   creds.server = preferences.getString("server");
@@ -182,7 +170,7 @@ String getFormattedDay() {
 void initializeTime() {
   Preferences pref;
 
-  pref.begin("time", true);
+  pref.begin("Together", true);
 
   gmtOffset_sec = pref.getLong("gmtOffset");
   daylightOffset_sec = pref.getInt("daylight");
@@ -325,6 +313,27 @@ void stopRecording() {
   ui.centerText("Audio uploaded!", u8g2_font_ciircle13_tr, EMPTY, 0);
   ui.recording();
 }
+
+TaskHandle_t TunerTaskHandle = NULL;
+volatile bool tunerTaskRunning = false;
+
+void tunerTask(void *pvParameters) {
+  while(tunerTaskRunning) {
+    audio.copyTone();
+    vTaskDelay(1);
+  }
+  audio.flushAmp();
+  TunerTaskHandle = NULL;
+  vTaskDelete(NULL);
+}
+
+void stopTunerTask() {
+  tunerTaskRunning = false;
+  while (TunerTaskHandle != NULL) {
+    vTaskDelay(pdMS_TO_TICKS(1));
+  }
+}
+
 ////////////////////////// SETUP //////////////////////////
 void setup() {
 
@@ -340,7 +349,7 @@ void setup() {
   ui.info();
 
   Preferences pref;
-  pref.begin("Volume", true);
+  pref.begin("Together", true);
   volume = pref.getUInt("volume", 5);
   pref.end();
 
@@ -355,7 +364,12 @@ void setup() {
         ui.volume(volume);
       }},
     {"Tuner", [&]() {
-
+        Preferences pref;
+        pref.begin("Together", true);
+        unsigned int a_freq = pref.getUInt("a_freq", 440);
+        pref.end();
+        audio.beginSineGenerator(a_freq);
+        ui.tuner(a_freq);
       }},
     {"Lights", [&]() {
 
@@ -423,7 +437,6 @@ void setup() {
       startPauseRecording();
     }
   };
-
   ui.recordingsItems[1] = {
     "FinishRecording", [&]()
     {
@@ -440,7 +453,6 @@ void setup() {
       playingPaused = true;
     }
   };
-
   ui.playbackItems[1] = {
     "StartPausePlayback", [&]() {
       if (!audio.isPlaying()) audio.beginURL(ui.togetherMenuItems[ui.getCurrentIndex()].length);
@@ -461,10 +473,43 @@ void setup() {
   ui.volumeCallbacks[1] = {
     "SaveVolume", [&]() {
       Preferences pref;
-      pref.begin("Volume");
+      pref.begin("Together");
       pref.putUInt("volume", ui.getVolume());
       pref.end();
       volume = ui.getVolume();
+    }
+  };
+
+  ui.tunerCallbacks[0] = {
+    "endTone", [&](){
+      stopTunerTask();
+      audio.endSineGenerator();
+      toneOn = false;
+
+      Preferences pref;
+      pref.begin("Together");
+      pref.putUInt("a_freq", ui.getA_Freq());
+      pref.end();
+    }
+  };
+  ui.tunerCallbacks[1] = {
+    "toggleTone", [&](){
+      toneOn = !toneOn;
+      if (toneOn) {
+        tunerTaskRunning = true;
+        xTaskCreatePinnedToCore(
+          tunerTask, "TunerTask", 2048, NULL, 1, &TunerTaskHandle, 0);
+      } else {
+        stopTunerTask();
+      }
+    }
+  };
+  ui.tunerCallbacks[2] = {
+    "updateParameters", [&]() {
+        float freq = ui.getA_Freq();
+        int diff = ui.getSemitone() - 57;
+        freq = freq * pow(2, diff / 12.0);
+        audio.changeFrequency(freq);
     }
   };
 

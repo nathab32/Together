@@ -170,6 +170,15 @@ static unsigned char mute_bits[] = {
   0x00, 0x00, 0x01, 0x00
 };
 
+#define note_width  14
+#define note_height 14
+static unsigned char note_bits[] = {
+ 0xf8,0xff,0xf8,0xff,0x18,0xf0,0x18,0xf0,0x18,0xf0,0x18,0xf0,
+ 0x18,0xf0,0x18,0xf0,0x18,0xf0,0x1e,0xfc,0x1f,0xfe,0x1f,0xfe,
+ 0x1f,0xfe,0x0e,0xdc};
+
+
+
 enum Screen
 {
     INFO,
@@ -202,6 +211,11 @@ const unsigned long MAX_RECORDING_LENGTH = 60000;
 class UI {
 
 private:
+  const char* noteNames[12] = {
+    "C", "C#", "D", "D#", "E", "F",
+    "F#", "G", "G#", "A", "A#", "B"
+  };
+
   friend void encoderISR();
 
     RotaryEncoder encoder;
@@ -239,8 +253,12 @@ private:
     unsigned long playbackLength;
 
     unsigned int vol = 0;
-    
     bool updateVol();
+
+    unsigned int a_freq_;
+    bool toneAdjust_;
+    bool tonePaused_;
+    int semitone_;
 
     void handleInfoInput();
     void handleMainMenuInput();
@@ -272,7 +290,11 @@ public:
     unsigned int getVolume();
     bool muted = false;
 
-    void tuner(unsigned int frequency, unsigned int volume);
+    void tuner(unsigned int a_freq);
+    unsigned int getA_Freq() { return a_freq_; }
+    int getSemitone() { return semitone_; }
+
+    void lights();
 
     void configure();
     void update();
@@ -285,6 +307,7 @@ public:
     MenuItem recordingsItems[2];
     MenuItem playbackItems[2];
     MenuItem volumeCallbacks[2];
+    MenuItem tunerCallbacks[3];
 };
 
 #endif //UI_H
